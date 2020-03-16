@@ -29,14 +29,10 @@
 
 #include "wl_def.h"
 #include <SDL_mixer.h>
-#if defined(GP2X_940)
-#include "gp2x/fmopl.h"
-#else
 #ifdef USE_GPL
-#include "dosbox/dbopl.h"
+#include "../dosbox/dbopl.h"
 #else
-#include "mame/fmopl.h"
-#endif
+#include "../mame/fmopl.h"
 #endif
 
 #define ORIGSAMPLERATE 7042
