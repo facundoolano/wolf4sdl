@@ -1,3 +1,6 @@
+deps:
+	brew install cmake sdl2 sdl2_mixer
+
 build:
 	rm -rf build && mkdir build && cd build && cmake .. && make
 

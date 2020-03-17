@@ -5,6 +5,7 @@ copied some cmake files from [ecwolf](https://bitbucket.org/ichera/wolf4sdl/bran
 
 Usage:
 
+    $ make deps
     $ make build
     $ cp ~/Path/to/Wolf/Data/*.wl6 data
     $ make run
