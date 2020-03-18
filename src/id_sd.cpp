@@ -29,11 +29,7 @@
 
 #include "wl_def.h"
 #include <SDL_mixer.h>
-#ifdef USE_GPL
-#include "../dosbox/dbopl.h"
-#else
 #include "../mame/fmopl.h"
-#endif
 
 #define ORIGSAMPLERATE 7042
 

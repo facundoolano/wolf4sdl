@@ -38,7 +38,6 @@ include(CheckCXXSourceCompiles)
 include(CheckFunctionExists)
 include(FindPkgConfig)
 
-target_sources(engine PRIVATE ../dosbox/dbopl.cpp)
 target_sources(engine PRIVATE ../mame/fmopl.cpp)
 
 check_function_exists(stricmp STRICMP_EXISTS)

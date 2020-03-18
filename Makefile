@@ -1,3 +1,5 @@
+.PHONY: deps build run
+
 deps:
 	brew install cmake sdl2 sdl2_mixer
 
