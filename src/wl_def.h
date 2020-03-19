@@ -31,17 +31,8 @@
 #endif
 
 #include "foreign.h"
-
-    #include "audiowl6.h"
-    #ifdef UPLOAD
-        #include "gfxv_apo.h"
-    #else
-			#ifdef GOODTIMES
-	            #include "gfxv_wl6.h"
-		    #else
-			    #include "gfxv_apo.h"
-			#endif
-    #endif
+#include "audiowl6.h"
+#include "gfxv_wl6.h"
 
 typedef uint8_t byte;
 typedef uint16_t word;
