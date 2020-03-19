@@ -889,7 +889,6 @@ void KillActor (objtype *ob)
             NewState (ob,&s_dogdie1);
             break;
 
-#ifndef SPEAR
         case bossobj:
             GivePoints (5000);
             NewState (ob,&s_bossdie1);
@@ -937,45 +936,6 @@ void KillActor (objtype *ob)
             gamestate.killy = player->y;
             NewState (ob,&s_hitlerdie1);
             break;
-#else
-        case spectreobj:
-            if (ob->flags&FL_BONUS)
-            {
-                GivePoints (200);       // Get points once for each
-                ob->flags &= ~FL_BONUS;
-            }
-            NewState (ob,&s_spectredie1);
-            break;
-
-        case angelobj:
-            GivePoints (5000);
-            NewState (ob,&s_angeldie1);
-            break;
-
-        case transobj:
-            GivePoints (5000);
-            NewState (ob,&s_transdie0);
-            PlaceItemType (bo_key1,tilex,tiley);
-            break;
-
-        case uberobj:
-            GivePoints (5000);
-            NewState (ob,&s_uberdie0);
-            PlaceItemType (bo_key1,tilex,tiley);
-            break;
-
-        case willobj:
-            GivePoints (5000);
-            NewState (ob,&s_willdie1);
-            PlaceItemType (bo_key1,tilex,tiley);
-            break;
-
-        case deathobj:
-            GivePoints (5000);
-            NewState (ob,&s_deathdie1);
-            PlaceItemType (bo_key1,tilex,tiley);
-            break;
-#endif
         default:
             break;
     }
@@ -1346,7 +1306,6 @@ void FirstSighting (objtype *ob)
             ob->speed *= 2;                 // go faster when chasing player
             break;
 
-#ifndef SPEAR
         case bossobj:
             SD_PlaySound(GUTENTAGSND);
             NewState (ob,&s_bosschase1);
@@ -1401,42 +1360,6 @@ void FirstSighting (objtype *ob)
             NewState (ob,&s_blinkychase1);
             ob->speed *= 2;                 // go faster when chasing player
             break;
-#else
-        case spectreobj:
-            SD_PlaySound(GHOSTSIGHTSND);
-            NewState (ob,&s_spectrechase1);
-            ob->speed = 800;                        // go faster when chasing player
-            break;
-
-        case angelobj:
-            SD_PlaySound(ANGELSIGHTSND);
-            NewState (ob,&s_angelchase1);
-            ob->speed = 1536;                       // go faster when chasing player
-            break;
-
-        case transobj:
-            SD_PlaySound(TRANSSIGHTSND);
-            NewState (ob,&s_transchase1);
-            ob->speed = 1536;                       // go faster when chasing player
-            break;
-
-        case uberobj:
-            NewState (ob,&s_uberchase1);
-            ob->speed = 3000;                       // go faster when chasing player
-            break;
-
-        case willobj:
-            SD_PlaySound(WILHELMSIGHTSND);
-            NewState (ob,&s_willchase1);
-            ob->speed = 2048;                       // go faster when chasing player
-            break;
-
-        case deathobj:
-            SD_PlaySound(KNIGHTSIGHTSND);
-            NewState (ob,&s_deathchase1);
-            ob->speed = 2048;                       // go faster when chasing player
-            break;
-#endif
         default:
             break;
     }

@@ -1,17 +1,6 @@
 //
 // WL_MENU.H
 //
-#ifdef SPEAR
-
-#define BORDCOLOR       0x99
-#define BORD2COLOR      0x93
-#define DEACTIVE        0x9b
-#define BKGDCOLOR       0x9d
-//#define STRIPE                0x9c
-
-#define MenuFadeOut()   VL_FadeOut(0,255,0,0,51,10)
-
-#else
 
 #define BORDCOLOR       0x29
 #define BORD2COLOR      0x23
@@ -21,7 +10,6 @@
 
 #define MenuFadeOut()   VL_FadeOut(0,255,43,0,0,10)
 
-#endif
 
 #define READCOLOR       0x4a
 #define READHCOLOR      0x47
@@ -33,11 +21,7 @@
 
 #define MENUSONG        WONDERIN_MUS
 
-#ifndef SPEAR
 #define INTROSONG       NAZI_NOR_MUS
-#else
-#define INTROSONG       XTOWER2_MUS
-#endif
 
 #define SENSITIVE       60
 #define CENTERX         ((int) screenWidth / 2)
@@ -46,12 +30,8 @@
 #define MENU_X  76
 #define MENU_Y  55
 #define MENU_W  178
-#ifndef SPEAR
 #ifndef GOODTIMES
 #define MENU_H  13*10+6
-#else
-#define MENU_H  13*9+6
-#endif
 #else
 #define MENU_H  13*9+6
 #endif
@@ -67,11 +47,7 @@
 #define SM_H3   3*13-7
 
 #define CTL_X   24
-#ifdef JAPAN
-#define CTL_Y   70
-#else
 #define CTL_Y   86
-#endif
 #define CTL_W   284
 #define CTL_H   60
 
@@ -216,9 +192,7 @@ enum menuitems
         changeview,
 
 #ifndef GOODTIMES
-#ifndef SPEAR
         readthis,
-#endif
 #endif
 
         viewscores,

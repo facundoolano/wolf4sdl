@@ -194,29 +194,6 @@ statetype s_boom1               = {false,SPR_BOOM_1,6,NULL,NULL,&s_boom2};
 statetype s_boom2               = {false,SPR_BOOM_2,6,NULL,NULL,&s_boom3};
 statetype s_boom3               = {false,SPR_BOOM_3,6,NULL,NULL,NULL};
 
-#ifdef SPEAR
-
-extern  statetype s_hrocket;
-extern  statetype s_hsmoke1;
-extern  statetype s_hsmoke2;
-extern  statetype s_hsmoke3;
-extern  statetype s_hsmoke4;
-extern  statetype s_hboom2;
-extern  statetype s_hboom3;
-
-void A_Smoke (objtype *ob);
-
-statetype s_hrocket             = {true,SPR_HROCKET_1,3,(statefunc)T_Projectile,(statefunc)A_Smoke,&s_hrocket};
-statetype s_hsmoke1             = {false,SPR_HSMOKE_1,3,NULL,NULL,&s_hsmoke2};
-statetype s_hsmoke2             = {false,SPR_HSMOKE_2,3,NULL,NULL,&s_hsmoke3};
-statetype s_hsmoke3             = {false,SPR_HSMOKE_3,3,NULL,NULL,&s_hsmoke4};
-statetype s_hsmoke4             = {false,SPR_HSMOKE_4,3,NULL,NULL,NULL};
-
-statetype s_hboom1              = {false,SPR_HBOOM_1,6,NULL,NULL,&s_hboom2};
-statetype s_hboom2              = {false,SPR_HBOOM_2,6,NULL,NULL,&s_hboom3};
-statetype s_hboom3              = {false,SPR_HBOOM_3,6,NULL,NULL,NULL};
-
-#endif
 
 void    T_Schabb (objtype *ob);
 void    T_SchabbThrow (objtype *ob);
@@ -239,11 +216,6 @@ void A_MechaSound (objtype *ob);
 void A_Smoke (objtype *ob)
 {
     GetNewActor ();
-#ifdef SPEAR
-    if (ob->obclass == hrocketobj)
-        newobj->state = &s_hsmoke1;
-    else
-#endif
         newobj->state = &s_smoke1;
     newobj->ticcount = 6;
 
@@ -334,13 +306,6 @@ void T_Projectile (objtype *ob)
             PlaySoundLocActor(MISSILEHITSND,ob);
             ob->state = &s_boom1;
         }
-#ifdef SPEAR
-        else if (ob->obclass == hrocketobj)
-        {
-            PlaySoundLocActor(MISSILEHITSND,ob);
-            ob->state = &s_hboom1;
-        }
-#endif
         else
 #endif
             ob->state = NULL;               // mark for removal
@@ -450,7 +415,6 @@ statetype s_grddie3             = {false,SPR_GRD_DIE_3,15,NULL,NULL,&s_grddie4};
 statetype s_grddie4             = {false,SPR_GRD_DEAD,0,NULL,NULL,&s_grddie4};
 
 
-#ifndef SPEAR
 //
 // ghosts
 //
@@ -474,7 +438,6 @@ statetype s_pinkychase2         = {false,SPR_PINKY_W2,10,(statefunc)T_Ghosts,NUL
 
 statetype s_clydechase1         = {false,SPR_CLYDE_W1,10,(statefunc)T_Ghosts,NULL,&s_clydechase2};
 statetype s_clydechase2         = {false,SPR_CLYDE_W2,10,(statefunc)T_Ghosts,NULL,&s_clydechase1};
-#endif
 
 //
 // dogs
@@ -738,7 +701,6 @@ statetype s_ssdie3              = {false,SPR_SS_DIE_3,15,NULL,NULL,&s_ssdie4};
 statetype s_ssdie4              = {false,SPR_SS_DEAD,0,NULL,NULL,&s_ssdie4};
 
 
-#ifndef SPEAR
 //
 // hans
 //
@@ -839,7 +801,6 @@ statetype s_gretelshoot5        = {false,SPR_GRETEL_SHOOT3,10,NULL,(statefunc)T_
 statetype s_gretelshoot6        = {false,SPR_GRETEL_SHOOT2,10,NULL,(statefunc)T_Shoot,&s_gretelshoot7};
 statetype s_gretelshoot7        = {false,SPR_GRETEL_SHOOT3,10,NULL,(statefunc)T_Shoot,&s_gretelshoot8};
 statetype s_gretelshoot8        = {false,SPR_GRETEL_SHOOT1,10,NULL,NULL,&s_gretelchase1};
-#endif
 
 
 /*
@@ -938,7 +899,6 @@ void SpawnDeadGuard (int tilex, int tiley)
 
 
 
-#ifndef SPEAR
 /*
 ===============
 =
@@ -980,7 +940,6 @@ void SpawnGretel (int tilex, int tiley)
     if (!loadedgame)
         gamestate.killtotal++;
 }
-#endif
 
 /*
 ===============
@@ -1073,11 +1032,7 @@ void SpawnPatrol (enemy_t which, int tilex, int tiley, int dir)
 void A_DeathScream (objtype *ob)
 {
 #ifndef UPLOAD
-#ifndef SPEAR
     if (mapon==9 && !US_RndT())
-#else
-    if ((mapon==18 || mapon==19) && !US_RndT())
-#endif
     {
         switch(ob->obclass)
         {
@@ -1130,7 +1085,6 @@ void A_DeathScream (objtype *ob)
         case dogobj:
             PlaySoundLocActor(DOGDEATHSND,ob);      // JAB
             break;
-#ifndef SPEAR
         case bossobj:
             SD_PlaySound(MUTTISND);                         // JAB
             break;
@@ -1157,26 +1111,6 @@ void A_DeathScream (objtype *ob)
             SD_PlaySound(ROSESND);
             break;
 #endif
-#else
-        case spectreobj:
-            SD_PlaySound(GHOSTFADESND);
-            break;
-        case angelobj:
-            SD_PlaySound(ANGELDEATHSND);
-            break;
-        case transobj:
-            SD_PlaySound(TRANSDEATHSND);
-            break;
-        case uberobj:
-            SD_PlaySound(UBERDEATHSND);
-            break;
-        case willobj:
-            SD_PlaySound(WILHELMDEATHSND);
-            break;
-        case deathobj:
-            SD_PlaySound(KNIGHTDEATHSND);
-            break;
-#endif
         default:
             break;
     }
@@ -1191,800 +1125,6 @@ void A_DeathScream (objtype *ob)
 =============================================================================
 */
 
-#ifdef SPEAR
-
-void T_Launch (objtype *ob);
-void T_Will (objtype *ob);
-
-extern  statetype s_angelshoot1;
-extern  statetype s_deathshoot1;
-extern  statetype s_spark1;
-
-//
-// trans
-//
-extern  statetype s_transstand;
-
-extern  statetype s_transchase1;
-extern  statetype s_transchase1s;
-extern  statetype s_transchase2;
-extern  statetype s_transchase3;
-extern  statetype s_transchase3s;
-extern  statetype s_transchase4;
-
-extern  statetype s_transdie0;
-extern  statetype s_transdie01;
-extern  statetype s_transdie1;
-extern  statetype s_transdie2;
-extern  statetype s_transdie3;
-extern  statetype s_transdie4;
-
-extern  statetype s_transshoot1;
-extern  statetype s_transshoot2;
-extern  statetype s_transshoot3;
-extern  statetype s_transshoot4;
-extern  statetype s_transshoot5;
-extern  statetype s_transshoot6;
-extern  statetype s_transshoot7;
-extern  statetype s_transshoot8;
-
-
-statetype s_transstand          = {false,SPR_TRANS_W1,0,(statefunc)T_Stand,NULL,&s_transstand};
-
-statetype s_transchase1         = {false,SPR_TRANS_W1,10,(statefunc)T_Chase,NULL,&s_transchase1s};
-statetype s_transchase1s        = {false,SPR_TRANS_W1,3,NULL,NULL,&s_transchase2};
-statetype s_transchase2         = {false,SPR_TRANS_W2,8,(statefunc)T_Chase,NULL,&s_transchase3};
-statetype s_transchase3         = {false,SPR_TRANS_W3,10,(statefunc)T_Chase,NULL,&s_transchase3s};
-statetype s_transchase3s        = {false,SPR_TRANS_W3,3,NULL,NULL,&s_transchase4};
-statetype s_transchase4         = {false,SPR_TRANS_W4,8,(statefunc)T_Chase,NULL,&s_transchase1};
-
-statetype s_transdie0           = {false,SPR_TRANS_W1,1,NULL,(statefunc)A_DeathScream,&s_transdie01};
-statetype s_transdie01          = {false,SPR_TRANS_W1,1,NULL,NULL,&s_transdie1};
-statetype s_transdie1           = {false,SPR_TRANS_DIE1,15,NULL,NULL,&s_transdie2};
-statetype s_transdie2           = {false,SPR_TRANS_DIE2,15,NULL,NULL,&s_transdie3};
-statetype s_transdie3           = {false,SPR_TRANS_DIE3,15,NULL,NULL,&s_transdie4};
-statetype s_transdie4           = {false,SPR_TRANS_DEAD,0,NULL,NULL,&s_transdie4};
-
-statetype s_transshoot1         = {false,SPR_TRANS_SHOOT1,30,NULL,NULL,&s_transshoot2};
-statetype s_transshoot2         = {false,SPR_TRANS_SHOOT2,10,NULL,(statefunc)T_Shoot,&s_transshoot3};
-statetype s_transshoot3         = {false,SPR_TRANS_SHOOT3,10,NULL,(statefunc)T_Shoot,&s_transshoot4};
-statetype s_transshoot4         = {false,SPR_TRANS_SHOOT2,10,NULL,(statefunc)T_Shoot,&s_transshoot5};
-statetype s_transshoot5         = {false,SPR_TRANS_SHOOT3,10,NULL,(statefunc)T_Shoot,&s_transshoot6};
-statetype s_transshoot6         = {false,SPR_TRANS_SHOOT2,10,NULL,(statefunc)T_Shoot,&s_transshoot7};
-statetype s_transshoot7         = {false,SPR_TRANS_SHOOT3,10,NULL,(statefunc)T_Shoot,&s_transshoot8};
-statetype s_transshoot8         = {false,SPR_TRANS_SHOOT1,10,NULL,NULL,&s_transchase1};
-
-
-/*
-===============
-=
-= SpawnTrans
-=
-===============
-*/
-
-void SpawnTrans (int tilex, int tiley)
-{
-    //        word *map;
-    //        word tile;
-
-    if (SoundBlasterPresent && DigiMode != sds_Off)
-        s_transdie01.tictime = 105;
-
-    SpawnNewObj (tilex,tiley,&s_transstand);
-    newobj->obclass = transobj;
-    newobj->hitpoints = starthitpoints[gamestate.difficulty][en_trans];
-    newobj->flags |= FL_SHOOTABLE|FL_AMBUSH;
-    if (!loadedgame)
-        gamestate.killtotal++;
-}
-
-
-//
-// uber
-//
-void T_UShoot (objtype *ob);
-
-extern  statetype s_uberstand;
-
-extern  statetype s_uberchase1;
-extern  statetype s_uberchase1s;
-extern  statetype s_uberchase2;
-extern  statetype s_uberchase3;
-extern  statetype s_uberchase3s;
-extern  statetype s_uberchase4;
-
-extern  statetype s_uberdie0;
-extern  statetype s_uberdie01;
-extern  statetype s_uberdie1;
-extern  statetype s_uberdie2;
-extern  statetype s_uberdie3;
-extern  statetype s_uberdie4;
-extern  statetype s_uberdie5;
-
-extern  statetype s_ubershoot1;
-extern  statetype s_ubershoot2;
-extern  statetype s_ubershoot3;
-extern  statetype s_ubershoot4;
-extern  statetype s_ubershoot5;
-extern  statetype s_ubershoot6;
-extern  statetype s_ubershoot7;
-
-
-statetype s_uberstand           = {false,SPR_UBER_W1,0,(statefunc)T_Stand,NULL,&s_uberstand};
-
-statetype s_uberchase1          = {false,SPR_UBER_W1,10,(statefunc)T_Chase,NULL,&s_uberchase1s};
-statetype s_uberchase1s         = {false,SPR_UBER_W1,3,NULL,NULL,&s_uberchase2};
-statetype s_uberchase2          = {false,SPR_UBER_W2,8,(statefunc)T_Chase,NULL,&s_uberchase3};
-statetype s_uberchase3          = {false,SPR_UBER_W3,10,(statefunc)T_Chase,NULL,&s_uberchase3s};
-statetype s_uberchase3s         = {false,SPR_UBER_W3,3,NULL,NULL,&s_uberchase4};
-statetype s_uberchase4          = {false,SPR_UBER_W4,8,(statefunc)T_Chase,NULL,&s_uberchase1};
-
-statetype s_uberdie0            = {false,SPR_UBER_W1,1,NULL,(statefunc)A_DeathScream,&s_uberdie01};
-statetype s_uberdie01           = {false,SPR_UBER_W1,1,NULL,NULL,&s_uberdie1};
-statetype s_uberdie1            = {false,SPR_UBER_DIE1,15,NULL,NULL,&s_uberdie2};
-statetype s_uberdie2            = {false,SPR_UBER_DIE2,15,NULL,NULL,&s_uberdie3};
-statetype s_uberdie3            = {false,SPR_UBER_DIE3,15,NULL,NULL,&s_uberdie4};
-statetype s_uberdie4            = {false,SPR_UBER_DIE4,15,NULL,NULL,&s_uberdie5};
-statetype s_uberdie5            = {false,SPR_UBER_DEAD,0,NULL,NULL,&s_uberdie5};
-
-statetype s_ubershoot1          = {false,SPR_UBER_SHOOT1,30,NULL,NULL,&s_ubershoot2};
-statetype s_ubershoot2          = {false,SPR_UBER_SHOOT2,12,NULL,(statefunc)T_UShoot,&s_ubershoot3};
-statetype s_ubershoot3          = {false,SPR_UBER_SHOOT3,12,NULL,(statefunc)T_UShoot,&s_ubershoot4};
-statetype s_ubershoot4          = {false,SPR_UBER_SHOOT4,12,NULL,(statefunc)T_UShoot,&s_ubershoot5};
-statetype s_ubershoot5          = {false,SPR_UBER_SHOOT3,12,NULL,(statefunc)T_UShoot,&s_ubershoot6};
-statetype s_ubershoot6          = {false,SPR_UBER_SHOOT2,12,NULL,(statefunc)T_UShoot,&s_ubershoot7};
-statetype s_ubershoot7          = {false,SPR_UBER_SHOOT1,12,NULL,NULL,&s_uberchase1};
-
-
-/*
-===============
-=
-= SpawnUber
-=
-===============
-*/
-
-void SpawnUber (int tilex, int tiley)
-{
-    if (SoundBlasterPresent && DigiMode != sds_Off)
-        s_uberdie01.tictime = 70;
-
-    SpawnNewObj (tilex,tiley,&s_uberstand);
-    newobj->obclass = uberobj;
-    newobj->hitpoints = starthitpoints[gamestate.difficulty][en_uber];
-    newobj->flags |= FL_SHOOTABLE|FL_AMBUSH;
-    if (!loadedgame)
-        gamestate.killtotal++;
-}
-
-
-/*
-===============
-=
-= T_UShoot
-=
-===============
-*/
-
-void T_UShoot (objtype *ob)
-{
-    int     dx,dy,dist;
-
-    T_Shoot (ob);
-
-    dx = abs(ob->tilex - player->tilex);
-    dy = abs(ob->tiley - player->tiley);
-    dist = dx>dy ? dx : dy;
-    if (dist <= 1)
-        TakeDamage (10,ob);
-}
-
-
-//
-// will
-//
-extern  statetype s_willstand;
-
-extern  statetype s_willchase1;
-extern  statetype s_willchase1s;
-extern  statetype s_willchase2;
-extern  statetype s_willchase3;
-extern  statetype s_willchase3s;
-extern  statetype s_willchase4;
-
-extern  statetype s_willdie1;
-extern  statetype s_willdie2;
-extern  statetype s_willdie3;
-extern  statetype s_willdie4;
-extern  statetype s_willdie5;
-extern  statetype s_willdie6;
-
-extern  statetype s_willshoot1;
-extern  statetype s_willshoot2;
-extern  statetype s_willshoot3;
-extern  statetype s_willshoot4;
-extern  statetype s_willshoot5;
-extern  statetype s_willshoot6;
-
-
-statetype s_willstand           = {false,SPR_WILL_W1,0,(statefunc)T_Stand,NULL,&s_willstand};
-
-statetype s_willchase1          = {false,SPR_WILL_W1,10,(statefunc)T_Will,NULL,&s_willchase1s};
-statetype s_willchase1s         = {false,SPR_WILL_W1,3,NULL,NULL,&s_willchase2};
-statetype s_willchase2          = {false,SPR_WILL_W2,8,(statefunc)T_Will,NULL,&s_willchase3};
-statetype s_willchase3          = {false,SPR_WILL_W3,10,(statefunc)T_Will,NULL,&s_willchase3s};
-statetype s_willchase3s         = {false,SPR_WILL_W3,3,NULL,NULL,&s_willchase4};
-statetype s_willchase4          = {false,SPR_WILL_W4,8,(statefunc)T_Will,NULL,&s_willchase1};
-
-statetype s_willdeathcam        = {false,SPR_WILL_W1,1,NULL,NULL,&s_willdie1};
-
-statetype s_willdie1            = {false,SPR_WILL_W1,1,NULL,(statefunc)A_DeathScream,&s_willdie2};
-statetype s_willdie2            = {false,SPR_WILL_W1,10,NULL,NULL,&s_willdie3};
-statetype s_willdie3            = {false,SPR_WILL_DIE1,10,NULL,NULL,&s_willdie4};
-statetype s_willdie4            = {false,SPR_WILL_DIE2,10,NULL,NULL,&s_willdie5};
-statetype s_willdie5            = {false,SPR_WILL_DIE3,10,NULL,NULL,&s_willdie6};
-statetype s_willdie6            = {false,SPR_WILL_DEAD,20,NULL,NULL,&s_willdie6};
-
-statetype s_willshoot1          = {false,SPR_WILL_SHOOT1,30,NULL,NULL,&s_willshoot2};
-statetype s_willshoot2          = {false,SPR_WILL_SHOOT2,10,NULL,(statefunc)T_Launch,&s_willshoot3};
-statetype s_willshoot3          = {false,SPR_WILL_SHOOT3,10,NULL,(statefunc)T_Shoot,&s_willshoot4};
-statetype s_willshoot4          = {false,SPR_WILL_SHOOT4,10,NULL,(statefunc)T_Shoot,&s_willshoot5};
-statetype s_willshoot5          = {false,SPR_WILL_SHOOT3,10,NULL,(statefunc)T_Shoot,&s_willshoot6};
-statetype s_willshoot6          = {false,SPR_WILL_SHOOT4,10,NULL,(statefunc)T_Shoot,&s_willchase1};
-
-
-/*
-===============
-=
-= SpawnWill
-=
-===============
-*/
-
-void SpawnWill (int tilex, int tiley)
-{
-    if (SoundBlasterPresent && DigiMode != sds_Off)
-        s_willdie2.tictime = 70;
-
-    SpawnNewObj (tilex,tiley,&s_willstand);
-    newobj->obclass = willobj;
-    newobj->hitpoints = starthitpoints[gamestate.difficulty][en_will];
-    newobj->flags |= FL_SHOOTABLE|FL_AMBUSH;
-    if (!loadedgame)
-        gamestate.killtotal++;
-}
-
-
-/*
-================
-=
-= T_Will
-=
-================
-*/
-
-void T_Will (objtype *ob)
-{
-    int32_t move;
-    int     dx,dy,dist;
-    boolean dodge;
-
-    dodge = false;
-    dx = abs(ob->tilex - player->tilex);
-    dy = abs(ob->tiley - player->tiley);
-    dist = dx>dy ? dx : dy;
-
-    if (CheckLine(ob))                                              // got a shot at player?
-    {
-        ob->hidden = false;
-        if ( (unsigned) US_RndT() < (tics<<3) && objfreelist)
-        {
-            //
-            // go into attack frame
-            //
-            if (ob->obclass == willobj)
-                NewState (ob,&s_willshoot1);
-            else if (ob->obclass == angelobj)
-                NewState (ob,&s_angelshoot1);
-            else
-                NewState (ob,&s_deathshoot1);
-            return;
-        }
-        dodge = true;
-    }
-    else
-        ob->hidden = true;
-
-    if (ob->dir == nodir)
-    {
-        if (dodge)
-            SelectDodgeDir (ob);
-        else
-            SelectChaseDir (ob);
-        if (ob->dir == nodir)
-            return;                                                 // object is blocked in
-    }
-
-    move = ob->speed*tics;
-
-    while (move)
-    {
-        if (ob->distance < 0)
-        {
-            //
-            // waiting for a door to open
-            //
-            OpenDoor (-ob->distance-1);
-            if (doorobjlist[-ob->distance-1].action != dr_open)
-                return;
-            ob->distance = TILEGLOBAL;      // go ahead, the door is now open
-            TryWalk(ob);
-        }
-
-        if (move < ob->distance)
-        {
-            MoveObj (ob,move);
-            break;
-        }
-
-        //
-        // reached goal tile, so select another one
-        //
-
-        //
-        // fix position to account for round off during moving
-        //
-        ob->x = ((int32_t)ob->tilex<<TILESHIFT)+TILEGLOBAL/2;
-        ob->y = ((int32_t)ob->tiley<<TILESHIFT)+TILEGLOBAL/2;
-
-        move -= ob->distance;
-
-        if (dist <4)
-            SelectRunDir (ob);
-        else if (dodge)
-            SelectDodgeDir (ob);
-        else
-            SelectChaseDir (ob);
-
-        if (ob->dir == nodir)
-            return;                                                 // object is blocked in
-    }
-
-}
-
-
-//
-// death
-//
-extern  statetype s_deathstand;
-
-extern  statetype s_deathchase1;
-extern  statetype s_deathchase1s;
-extern  statetype s_deathchase2;
-extern  statetype s_deathchase3;
-extern  statetype s_deathchase3s;
-extern  statetype s_deathchase4;
-
-extern  statetype s_deathdie1;
-extern  statetype s_deathdie2;
-extern  statetype s_deathdie3;
-extern  statetype s_deathdie4;
-extern  statetype s_deathdie5;
-extern  statetype s_deathdie6;
-extern  statetype s_deathdie7;
-extern  statetype s_deathdie8;
-extern  statetype s_deathdie9;
-
-extern  statetype s_deathshoot1;
-extern  statetype s_deathshoot2;
-extern  statetype s_deathshoot3;
-extern  statetype s_deathshoot4;
-extern  statetype s_deathshoot5;
-
-
-statetype s_deathstand          = {false,SPR_DEATH_W1,0,(statefunc)T_Stand,NULL,&s_deathstand};
-
-statetype s_deathchase1         = {false,SPR_DEATH_W1,10,(statefunc)T_Will,NULL,&s_deathchase1s};
-statetype s_deathchase1s        = {false,SPR_DEATH_W1,3,NULL,NULL,&s_deathchase2};
-statetype s_deathchase2         = {false,SPR_DEATH_W2,8,(statefunc)T_Will,NULL,&s_deathchase3};
-statetype s_deathchase3         = {false,SPR_DEATH_W3,10,(statefunc)T_Will,NULL,&s_deathchase3s};
-statetype s_deathchase3s        = {false,SPR_DEATH_W3,3,NULL,NULL,&s_deathchase4};
-statetype s_deathchase4         = {false,SPR_DEATH_W4,8,(statefunc)T_Will,NULL,&s_deathchase1};
-
-statetype s_deathdeathcam       = {false,SPR_DEATH_W1,1,NULL,NULL,&s_deathdie1};
-
-statetype s_deathdie1           = {false,SPR_DEATH_W1,1,NULL,(statefunc)A_DeathScream,&s_deathdie2};
-statetype s_deathdie2           = {false,SPR_DEATH_W1,10,NULL,NULL,&s_deathdie3};
-statetype s_deathdie3           = {false,SPR_DEATH_DIE1,10,NULL,NULL,&s_deathdie4};
-statetype s_deathdie4           = {false,SPR_DEATH_DIE2,10,NULL,NULL,&s_deathdie5};
-statetype s_deathdie5           = {false,SPR_DEATH_DIE3,10,NULL,NULL,&s_deathdie6};
-statetype s_deathdie6           = {false,SPR_DEATH_DIE4,10,NULL,NULL,&s_deathdie7};
-statetype s_deathdie7           = {false,SPR_DEATH_DIE5,10,NULL,NULL,&s_deathdie8};
-statetype s_deathdie8           = {false,SPR_DEATH_DIE6,10,NULL,NULL,&s_deathdie9};
-statetype s_deathdie9           = {false,SPR_DEATH_DEAD,0,NULL,NULL,&s_deathdie9};
-
-statetype s_deathshoot1         = {false,SPR_DEATH_SHOOT1,30,NULL,NULL,&s_deathshoot2};
-statetype s_deathshoot2         = {false,SPR_DEATH_SHOOT2,10,NULL,(statefunc)T_Launch,&s_deathshoot3};
-statetype s_deathshoot3         = {false,SPR_DEATH_SHOOT4,10,NULL,(statefunc)T_Shoot,&s_deathshoot4};
-statetype s_deathshoot4         = {false,SPR_DEATH_SHOOT3,10,NULL,(statefunc)T_Launch,&s_deathshoot5};
-statetype s_deathshoot5         = {false,SPR_DEATH_SHOOT4,10,NULL,(statefunc)T_Shoot,&s_deathchase1};
-
-
-/*
-===============
-=
-= SpawnDeath
-=
-===============
-*/
-
-void SpawnDeath (int tilex, int tiley)
-{
-    if (SoundBlasterPresent && DigiMode != sds_Off)
-        s_deathdie2.tictime = 105;
-
-    SpawnNewObj (tilex,tiley,&s_deathstand);
-    newobj->obclass = deathobj;
-    newobj->hitpoints = starthitpoints[gamestate.difficulty][en_death];
-    newobj->flags |= FL_SHOOTABLE|FL_AMBUSH;
-    if (!loadedgame)
-        gamestate.killtotal++;
-}
-
-/*
-===============
-=
-= T_Launch
-=
-===============
-*/
-
-void T_Launch (objtype *ob)
-{
-    int32_t deltax,deltay;
-    float   angle;
-    int     iangle;
-
-    deltax = player->x - ob->x;
-    deltay = ob->y - player->y;
-    angle = (float) atan2 ((float) deltay, (float) deltax);
-    if (angle<0)
-        angle = (float) (M_PI*2+angle);
-    iangle = (int) (angle/(M_PI*2)*ANGLES);
-    if (ob->obclass == deathobj)
-    {
-        T_Shoot (ob);
-        if (ob->state == &s_deathshoot2)
-        {
-            iangle-=4;
-            if (iangle<0)
-                iangle+=ANGLES;
-        }
-        else
-        {
-            iangle+=4;
-            if (iangle>=ANGLES)
-                iangle-=ANGLES;
-        }
-    }
-
-    GetNewActor ();
-    newobj->state = &s_rocket;
-    newobj->ticcount = 1;
-
-    newobj->tilex = ob->tilex;
-    newobj->tiley = ob->tiley;
-    newobj->x = ob->x;
-    newobj->y = ob->y;
-    newobj->obclass = rocketobj;
-    switch(ob->obclass)
-    {
-        case deathobj:
-            newobj->state = &s_hrocket;
-            newobj->obclass = hrocketobj;
-            PlaySoundLocActor (KNIGHTMISSILESND,newobj);
-            break;
-        case angelobj:
-            newobj->state = &s_spark1;
-            newobj->obclass = sparkobj;
-            PlaySoundLocActor (ANGELFIRESND,newobj);
-            break;
-        default:
-            PlaySoundLocActor (MISSILEFIRESND,newobj);
-    }
-
-    newobj->dir = nodir;
-    newobj->angle = iangle;
-    newobj->speed = 0x2000l;
-    newobj->flags = FL_NEVERMARK;
-    newobj->active = ac_yes;
-}
-
-
-
-//
-// angel
-//
-void A_Relaunch (objtype *ob);
-void A_Victory (objtype *ob);
-void A_StartAttack (objtype *ob);
-void A_Breathing (objtype *ob);
-
-extern  statetype s_angelstand;
-
-extern  statetype s_angelchase1;
-extern  statetype s_angelchase1s;
-extern  statetype s_angelchase2;
-extern  statetype s_angelchase3;
-extern  statetype s_angelchase3s;
-extern  statetype s_angelchase4;
-
-extern  statetype s_angeldie1;
-extern  statetype s_angeldie11;
-extern  statetype s_angeldie2;
-extern  statetype s_angeldie3;
-extern  statetype s_angeldie4;
-extern  statetype s_angeldie5;
-extern  statetype s_angeldie6;
-extern  statetype s_angeldie7;
-extern  statetype s_angeldie8;
-extern  statetype s_angeldie9;
-
-extern  statetype s_angelshoot1;
-extern  statetype s_angelshoot2;
-extern  statetype s_angelshoot3;
-extern  statetype s_angelshoot4;
-extern  statetype s_angelshoot5;
-extern  statetype s_angelshoot6;
-
-extern  statetype s_angeltired;
-extern  statetype s_angeltired2;
-extern  statetype s_angeltired3;
-extern  statetype s_angeltired4;
-extern  statetype s_angeltired5;
-extern  statetype s_angeltired6;
-extern  statetype s_angeltired7;
-
-extern  statetype s_spark1;
-extern  statetype s_spark2;
-extern  statetype s_spark3;
-extern  statetype s_spark4;
-
-
-statetype s_angelstand          = {false,SPR_ANGEL_W1,0,(statefunc)T_Stand,NULL,&s_angelstand};
-
-statetype s_angelchase1         = {false,SPR_ANGEL_W1,10,(statefunc)T_Will,NULL,&s_angelchase1s};
-statetype s_angelchase1s        = {false,SPR_ANGEL_W1,3,NULL,NULL,&s_angelchase2};
-statetype s_angelchase2         = {false,SPR_ANGEL_W2,8,(statefunc)T_Will,NULL,&s_angelchase3};
-statetype s_angelchase3         = {false,SPR_ANGEL_W3,10,(statefunc)T_Will,NULL,&s_angelchase3s};
-statetype s_angelchase3s        = {false,SPR_ANGEL_W3,3,NULL,NULL,&s_angelchase4};
-statetype s_angelchase4         = {false,SPR_ANGEL_W4,8,(statefunc)T_Will,NULL,&s_angelchase1};
-
-statetype s_angeldie1           = {false,SPR_ANGEL_W1,1,NULL,(statefunc)A_DeathScream,&s_angeldie11};
-statetype s_angeldie11          = {false,SPR_ANGEL_W1,1,NULL,NULL,&s_angeldie2};
-statetype s_angeldie2           = {false,SPR_ANGEL_DIE1,10,NULL,(statefunc)A_Slurpie,&s_angeldie3};
-statetype s_angeldie3           = {false,SPR_ANGEL_DIE2,10,NULL,NULL,&s_angeldie4};
-statetype s_angeldie4           = {false,SPR_ANGEL_DIE3,10,NULL,NULL,&s_angeldie5};
-statetype s_angeldie5           = {false,SPR_ANGEL_DIE4,10,NULL,NULL,&s_angeldie6};
-statetype s_angeldie6           = {false,SPR_ANGEL_DIE5,10,NULL,NULL,&s_angeldie7};
-statetype s_angeldie7           = {false,SPR_ANGEL_DIE6,10,NULL,NULL,&s_angeldie8};
-statetype s_angeldie8           = {false,SPR_ANGEL_DIE7,10,NULL,NULL,&s_angeldie9};
-statetype s_angeldie9           = {false,SPR_ANGEL_DEAD,130,NULL,(statefunc)A_Victory,&s_angeldie9};
-
-statetype s_angelshoot1         = {false,SPR_ANGEL_SHOOT1,10,NULL,(statefunc)A_StartAttack,&s_angelshoot2};
-statetype s_angelshoot2         = {false,SPR_ANGEL_SHOOT2,20,NULL,(statefunc)T_Launch,&s_angelshoot3};
-statetype s_angelshoot3         = {false,SPR_ANGEL_SHOOT1,10,NULL,(statefunc)A_Relaunch,&s_angelshoot2};
-
-statetype s_angeltired          = {false,SPR_ANGEL_TIRED1,40,NULL,(statefunc)A_Breathing,&s_angeltired2};
-statetype s_angeltired2         = {false,SPR_ANGEL_TIRED2,40,NULL,NULL,&s_angeltired3};
-statetype s_angeltired3         = {false,SPR_ANGEL_TIRED1,40,NULL,(statefunc)A_Breathing,&s_angeltired4};
-statetype s_angeltired4         = {false,SPR_ANGEL_TIRED2,40,NULL,NULL,&s_angeltired5};
-statetype s_angeltired5         = {false,SPR_ANGEL_TIRED1,40,NULL,(statefunc)A_Breathing,&s_angeltired6};
-statetype s_angeltired6         = {false,SPR_ANGEL_TIRED2,40,NULL,NULL,&s_angeltired7};
-statetype s_angeltired7         = {false,SPR_ANGEL_TIRED1,40,NULL,(statefunc)A_Breathing,&s_angelchase1};
-
-statetype s_spark1              = {false,SPR_SPARK1,6,(statefunc)T_Projectile,NULL,&s_spark2};
-statetype s_spark2              = {false,SPR_SPARK2,6,(statefunc)T_Projectile,NULL,&s_spark3};
-statetype s_spark3              = {false,SPR_SPARK3,6,(statefunc)T_Projectile,NULL,&s_spark4};
-statetype s_spark4              = {false,SPR_SPARK4,6,(statefunc)T_Projectile,NULL,&s_spark1};
-
-
-void A_Slurpie (objtype *)
-{
-    SD_PlaySound(SLURPIESND);
-}
-
-void A_Breathing (objtype *)
-{
-    SD_PlaySound(ANGELTIREDSND);
-}
-
-/*
-===============
-=
-= SpawnAngel
-=
-===============
-*/
-
-void SpawnAngel (int tilex, int tiley)
-{
-    if (SoundBlasterPresent && DigiMode != sds_Off)
-        s_angeldie11.tictime = 105;
-
-    SpawnNewObj (tilex,tiley,&s_angelstand);
-    newobj->obclass = angelobj;
-    newobj->hitpoints = starthitpoints[gamestate.difficulty][en_angel];
-    newobj->flags |= FL_SHOOTABLE|FL_AMBUSH;
-    if (!loadedgame)
-        gamestate.killtotal++;
-}
-
-
-/*
-=================
-=
-= A_Victory
-=
-=================
-*/
-
-void A_Victory (objtype *)
-{
-    playstate = ex_victorious;
-}
-
-
-/*
-=================
-=
-= A_StartAttack
-=
-=================
-*/
-
-void A_StartAttack (objtype *ob)
-{
-    ob->temp1 = 0;
-}
-
-
-/*
-=================
-=
-= A_Relaunch
-=
-=================
-*/
-
-void A_Relaunch (objtype *ob)
-{
-    if (++ob->temp1 == 3)
-    {
-        NewState (ob,&s_angeltired);
-        return;
-    }
-
-    if (US_RndT()&1)
-    {
-        NewState (ob,&s_angelchase1);
-        return;
-    }
-}
-
-
-
-
-//
-// spectre
-//
-void T_SpectreWait (objtype *ob);
-void A_Dormant (objtype *ob);
-
-extern  statetype s_spectrewait1;
-extern  statetype s_spectrewait2;
-extern  statetype s_spectrewait3;
-extern  statetype s_spectrewait4;
-
-extern  statetype s_spectrechase1;
-extern  statetype s_spectrechase2;
-extern  statetype s_spectrechase3;
-extern  statetype s_spectrechase4;
-
-extern  statetype s_spectredie1;
-extern  statetype s_spectredie2;
-extern  statetype s_spectredie3;
-extern  statetype s_spectredie4;
-
-extern  statetype s_spectrewake;
-
-statetype s_spectrewait1        = {false,SPR_SPECTRE_W1,10,(statefunc)T_Stand,NULL,&s_spectrewait2};
-statetype s_spectrewait2        = {false,SPR_SPECTRE_W2,10,(statefunc)T_Stand,NULL,&s_spectrewait3};
-statetype s_spectrewait3        = {false,SPR_SPECTRE_W3,10,(statefunc)T_Stand,NULL,&s_spectrewait4};
-statetype s_spectrewait4        = {false,SPR_SPECTRE_W4,10,(statefunc)T_Stand,NULL,&s_spectrewait1};
-
-statetype s_spectrechase1       = {false,SPR_SPECTRE_W1,10,(statefunc)T_Ghosts,NULL,&s_spectrechase2};
-statetype s_spectrechase2       = {false,SPR_SPECTRE_W2,10,(statefunc)T_Ghosts,NULL,&s_spectrechase3};
-statetype s_spectrechase3       = {false,SPR_SPECTRE_W3,10,(statefunc)T_Ghosts,NULL,&s_spectrechase4};
-statetype s_spectrechase4       = {false,SPR_SPECTRE_W4,10,(statefunc)T_Ghosts,NULL,&s_spectrechase1};
-
-statetype s_spectredie1         = {false,SPR_SPECTRE_F1,10,NULL,NULL,&s_spectredie2};
-statetype s_spectredie2         = {false,SPR_SPECTRE_F2,10,NULL,NULL,&s_spectredie3};
-statetype s_spectredie3         = {false,SPR_SPECTRE_F3,10,NULL,NULL,&s_spectredie4};
-statetype s_spectredie4         = {false,SPR_SPECTRE_F4,300,NULL,NULL,&s_spectrewake};
-statetype s_spectrewake         = {false,SPR_SPECTRE_F4,10,NULL,(statefunc)A_Dormant,&s_spectrewake};
-
-/*
-===============
-=
-= SpawnSpectre
-=
-===============
-*/
-
-void SpawnSpectre (int tilex, int tiley)
-{
-    SpawnNewObj (tilex,tiley,&s_spectrewait1);
-    newobj->obclass = spectreobj;
-    newobj->hitpoints = starthitpoints[gamestate.difficulty][en_spectre];
-    newobj->flags |= FL_SHOOTABLE|FL_AMBUSH|FL_BONUS; // |FL_NEVERMARK|FL_NONMARK;
-    if (!loadedgame)
-        gamestate.killtotal++;
-}
-
-
-/*
-===============
-=
-= A_Dormant
-=
-===============
-*/
-
-void A_Dormant (objtype *ob)
-{
-    int32_t     deltax,deltay;
-    int         xl,xh,yl,yh;
-    int         x,y;
-    uintptr_t   tile;
-
-    deltax = ob->x - player->x;
-    if (deltax < -MINACTORDIST || deltax > MINACTORDIST)
-        goto moveok;
-    deltay = ob->y - player->y;
-    if (deltay < -MINACTORDIST || deltay > MINACTORDIST)
-        goto moveok;
-
-    return;
-moveok:
-
-    xl = (ob->x-MINDIST) >> TILESHIFT;
-    xh = (ob->x+MINDIST) >> TILESHIFT;
-    yl = (ob->y-MINDIST) >> TILESHIFT;
-    yh = (ob->y+MINDIST) >> TILESHIFT;
-
-    for (y=yl ; y<=yh ; y++)
-        for (x=xl ; x<=xh ; x++)
-        {
-            tile = (uintptr_t)actorat[x][y];
-            if (!tile)
-                continue;
-            if (!ISPOINTER(tile))
-                return;
-            if (((objtype *)tile)->flags&FL_SHOOTABLE)
-                return;
-        }
-
-        ob->flags |= FL_AMBUSH | FL_SHOOTABLE;
-        ob->flags &= ~FL_ATTACKMODE;
-        ob->flags &= ~FL_NONMARK;      // stuck bugfix 1
-        ob->dir = nodir;
-        NewState (ob,&s_spectrewait1);
-}
-
-
-#endif
 
 /*
 =============================================================================
@@ -1994,7 +1134,6 @@ moveok:
 =============================================================================
 */
 
-#ifndef SPEAR
 /*
 ===============
 =
@@ -3034,7 +2173,6 @@ void T_Fake (objtype *ob)
     }
 }
 
-#endif
 /*
 ============================================================================
 
@@ -3138,7 +2276,6 @@ void T_Chase (objtype *ob)
                 case ssobj:
                     NewState (ob,&s_ssshoot1);
                     break;
-#ifndef SPEAR
                 case bossobj:
                     NewState (ob,&s_bossshoot1);
                     break;
@@ -3151,23 +2288,6 @@ void T_Chase (objtype *ob)
                 case realhitlerobj:
                     NewState (ob,&s_hitlershoot1);
                     break;
-#else
-                case angelobj:
-                    NewState (ob,&s_angelshoot1);
-                    break;
-                case transobj:
-                    NewState (ob,&s_transshoot1);
-                    break;
-                case uberobj:
-                    NewState (ob,&s_ubershoot1);
-                    break;
-                case willobj:
-                    NewState (ob,&s_willshoot1);
-                    break;
-                case deathobj:
-                    NewState (ob,&s_deathshoot1);
-                    break;
-#endif
                 default:
                     break;
             }
@@ -3532,7 +2652,6 @@ void T_Shoot (objtype *ob)
         case ssobj:
             PlaySoundLocActor(SSFIRESND,ob);
             break;
-#ifndef SPEAR
 #ifndef APOGEE_1_0
         case giftobj:
         case fatobj:
@@ -3550,7 +2669,6 @@ void T_Shoot (objtype *ob)
         case fakeobj:
             PlaySoundLocActor(FLAMETHROWERSND,ob);
             break;
-#endif
         default:
             PlaySoundLocActor(NAZIFIRESND,ob);
     }
@@ -3593,7 +2711,6 @@ void T_Bite (objtype *ob)
 }
 
 
-#ifndef SPEAR
 /*
 ============================================================================
 
@@ -3831,13 +2948,7 @@ void    A_StartDeathCam (objtype *ob)
     else
     {
         CacheLump(LEVELEND_LUMP_START,LEVELEND_LUMP_END);
-#ifdef JAPAN
-#ifndef JAPDEMO
-        CA_CacheScreen(C_LETSSEEPIC);
-#endif
-#else
         Write(0,7,STR_SEEAGAIN);
-#endif
     }
 
     VW_UpdateScreen ();
@@ -3891,7 +3002,6 @@ void    A_StartDeathCam (objtype *ob)
 
     switch (ob->obclass)
     {
-#ifndef SPEAR
         case schabbobj:
             NewState (ob,&s_schabbdeathcam);
             break;
@@ -3906,8 +3016,6 @@ void    A_StartDeathCam (objtype *ob)
             break;
         default:
             break;
-#endif
     }
 }
 
-#endif

@@ -818,50 +818,31 @@ void SignonScreen (void)                        // VGA version
 
 void FinishSignon (void)
 {
-#ifndef SPEAR
     VW_Bar (0,189,300,11,VL_GetPixel(0,0));
     WindowX = 0;
     WindowW = 320;
     PrintY = 190;
 
-    #ifndef JAPAN
     SETFONTCOLOR(14,4);
 
-    #ifdef SPANISH
-    US_CPrint ("Oprima una tecla");
-    #else
     US_CPrint ("Press a key");
-    #endif
 
-    #endif
 
     VH_UpdateScreen();
 
     if (!param_nowait)
         IN_Ack ();
 
-    #ifndef JAPAN
     VW_Bar (0,189,300,11,VL_GetPixel(0,0));
 
     PrintY = 190;
     SETFONTCOLOR(10,4);
 
-    #ifdef SPANISH
-    US_CPrint ("pensando...");
-    #else
     US_CPrint ("Working...");
-    #endif
 
     VH_UpdateScreen();
-    #endif
 
     SETFONTCOLOR(0,15);
-#else
-    VH_UpdateScreen();
-
-    if (!param_nowait)
-        VW_WaitVBL(3*70);
-#endif
 }
 
 //===========================================================================
@@ -882,7 +863,6 @@ void FinishSignon (void)
 static int wolfdigimap[] =
     {
         // These first sounds are in the upload version
-#ifndef SPEAR
         HALTSND,                0,  -1,
         DOGBARKSND,             1,  -1,
         CLOSEDOORSND,           2,  -1,
@@ -939,55 +919,6 @@ static int wolfdigimap[] =
         ROSESND,                45, -1,         // EPISODE 5 BOSS DIE
 
 #endif
-#else
-//
-// SPEAR OF DESTINY DIGISOUNDS
-//
-        HALTSND,                0,  -1,
-        CLOSEDOORSND,           2,  -1,
-        OPENDOORSND,            3,  -1,
-        ATKMACHINEGUNSND,       4,   0,
-        ATKPISTOLSND,           5,   0,
-        ATKGATLINGSND,          6,   0,
-        SCHUTZADSND,            7,  -1,
-        BOSSFIRESND,            8,   1,
-        SSFIRESND,              9,  -1,
-        DEATHSCREAM1SND,        10, -1,
-        DEATHSCREAM2SND,        11, -1,
-        TAKEDAMAGESND,          12, -1,
-        PUSHWALLSND,            13, -1,
-        AHHHGSND,               15, -1,
-        LEBENSND,               16, -1,
-        NAZIFIRESND,            17, -1,
-        SLURPIESND,             18, -1,
-        LEVELDONESND,           22, -1,
-        DEATHSCREAM4SND,        23, -1,         // AIIEEE
-        DEATHSCREAM3SND,        23, -1,         // DOUBLY-MAPPED!!!
-        DEATHSCREAM5SND,        24, -1,         // DEE-DEE
-        DEATHSCREAM6SND,        25, -1,         // FART
-        DEATHSCREAM7SND,        26, -1,         // GASP
-        DEATHSCREAM8SND,        27, -1,         // GUH-BOY!
-        DEATHSCREAM9SND,        28, -1,         // AH GEEZ!
-        GETGATLINGSND,          38, -1,         // Got Gat replacement
-
-#ifndef SPEARDEMO
-        DOGBARKSND,             1,  -1,
-        DOGDEATHSND,            14, -1,
-        SPIONSND,               19, -1,
-        NEINSOVASSND,           20, -1,
-        DOGATTACKSND,           21, -1,
-        TRANSSIGHTSND,          29, -1,         // Trans Sight
-        TRANSDEATHSND,          30, -1,         // Trans Death
-        WILHELMSIGHTSND,        31, -1,         // Wilhelm Sight
-        WILHELMDEATHSND,        32, -1,         // Wilhelm Death
-        UBERDEATHSND,           33, -1,         // Uber Death
-        KNIGHTSIGHTSND,         34, -1,         // Death Knight Sight
-        KNIGHTDEATHSND,         35, -1,         // Death Knight Death
-        ANGELSIGHTSND,          36, -1,         // Angel Sight
-        ANGELDEATHSND,          37, -1,         // Angel Death
-        GETSPEARSND,            39, -1,         // Got Spear replacement
-#endif
-#endif
         LASTSOUND
     };
 
@@ -1004,7 +935,6 @@ void InitDigiMap (void)
     }
 }
 
-#ifndef SPEAR
 CP_iteminfo MusicItems={CTL_X,CTL_Y,6,0,32};
 CP_itemtype MusicMenu[]=
     {
@@ -1029,30 +959,13 @@ CP_itemtype MusicMenu[]=
         {1,"Ultimate Conquest",0},
         {1,"Wolfpack",0}
     };
-#else
-CP_iteminfo MusicItems={CTL_X,CTL_Y-20,9,0,32};
-CP_itemtype MusicMenu[]=
-    {
-        {1,"Funky Colonel Bill",0},
-        {1,"Death To The Nazis",0},
-        {1,"Tiptoeing Around",0},
-        {1,"Is This THE END?",0},
-        {1,"Evil Incarnate",0},
-        {1,"Jazzin' Them Nazis",0},
-        {1,"Puttin' It To The Enemy",0},
-        {1,"The SS Gonna Get You",0},
-        {1,"Towering Above",0}
-    };
-#endif
 
-#ifndef SPEARDEMO
 void DoJukebox(void)
 {
     int which,lastsong=-1;
     unsigned start;
     unsigned songs[]=
         {
-#ifndef SPEAR
             GETTHEM_MUS,
             SEARCHN_MUS,
             POW_MUS,
@@ -1073,17 +986,6 @@ void DoJukebox(void)
             ZEROHOUR_MUS,
             ULTIMATE_MUS,
             PACMAN_MUS
-#else
-            XFUNKIE_MUS,             // 0
-            XDEATH_MUS,              // 2
-            XTIPTOE_MUS,             // 4
-            XTHEEND_MUS,             // 7
-            XEVIL_MUS,               // 17
-            XJAZNAZI_MUS,            // 18
-            XPUTIT_MUS,              // 21
-            XGETYOU_MUS,             // 22
-            XTOWER2_MUS              // 23
-#endif
         };
 
     IN_ClearKeysDown();
@@ -1092,22 +994,14 @@ void DoJukebox(void)
 
     MenuFadeOut();
 
-#ifndef SPEAR
 #ifndef UPLOAD
     start = ((SDL_GetTicks()/10)%3)*6;
 #else
     start = 0;
 #endif
-#else
-    start = 0;
-#endif
 
     CA_CacheGrChunk (STARTFONT+1);
-#ifdef SPEAR
-    CacheLump (BACKDROP_LUMP_START,BACKDROP_LUMP_END);
-#else
     CacheLump (CONTROLS_LUMP_START,CONTROLS_LUMP_END);
-#endif
     CA_LoadAllSounds ();
 
     fontnumber=1;
@@ -1116,11 +1010,7 @@ void DoJukebox(void)
     DrawStripes (10);
     SETFONTCOLOR (TEXTCOLOR,BKGDCOLOR);
 
-#ifndef SPEAR
     DrawWindow (CTL_X-2,CTL_Y-6,280,13*7,BKGDCOLOR);
-#else
-    DrawWindow (CTL_X-2,CTL_Y-26,280,13*10,BKGDCOLOR);
-#endif
 
     DrawMenu (&MusicItems,&MusicMenu[start]);
 
@@ -1152,13 +1042,8 @@ void DoJukebox(void)
 
     MenuFadeOut();
     IN_ClearKeysDown();
-#ifdef SPEAR
-    UnCacheLump (BACKDROP_LUMP_START,BACKDROP_LUMP_END);
-#else
     UnCacheLump (CONTROLS_LUMP_START,CONTROLS_LUMP_END);
-#endif
 }
-#endif
 
 /*
 ==========================
@@ -1172,9 +1057,7 @@ void DoJukebox(void)
 
 static void InitGame()
 {
-#ifndef SPEARDEMO
     boolean didjukebox=false;
-#endif
 
     // initialize SDL
     if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_JOYSTICK) < 0)
@@ -1207,23 +1090,6 @@ static void InitGame()
     US_Startup ();
 
     // TODO: Will any memory checking be needed someday??
-#ifdef NOTYET
-#ifndef SPEAR
-    if (mminfo.mainmem < 235000L)
-#else
-    if (mminfo.mainmem < 257000L && !MS_CheckParm("debugmode"))
-#endif
-    {
-        byte *screen;
-
-        CA_CacheGrChunk (ERRORSCREEN);
-        screen = grsegs[ERRORSCREEN];
-        ShutdownId();
-/*        memcpy((byte *)0xb8000,screen+7+7*160,17*160);
-        gotoxy (1,23);*/
-        exit(1);
-    }
-#endif
 
 
 //
@@ -1240,14 +1106,12 @@ static void InitGame()
 //
 	IN_ProcessEvents();
 
-#ifndef SPEARDEMO
     if (Keyboard[sc_M])
     {
         DoJukebox();
         didjukebox=true;
     }
     else
-#endif
 
 //
 // draw intro screen stuff
@@ -1272,15 +1136,9 @@ static void InitGame()
 // initialize variables
 //
     InitRedShifts ();
-#ifndef SPEARDEMO
     if(!didjukebox)
-#endif
         FinishSignon();
 
-#ifdef NOTYET
-    vdisp = (byte *) (0xa0000+PAGE1START);
-    vbuf = (byte *) (0xa0000+PAGE2START);
-#endif
 }
 
 //===========================================================================
@@ -1373,9 +1231,6 @@ void NewViewSize (int width)
 
 void Quit (const char *errorStr, ...)
 {
-#ifdef NOTYET
-    byte *screen;
-#endif
     char error[256];
     if(errorStr != NULL)
     {
@@ -1391,13 +1246,7 @@ void Quit (const char *errorStr, ...)
         ShutdownId();
         if (*error)
         {
-#ifdef NOTYET
-            SetTextCursor(0,0);
-#endif
             puts(error);
-#ifdef NOTYET
-            SetTextCursor(0,2);
-#endif
             VW_WaitVBL(100);
         }
         exit(1);
@@ -1405,46 +1254,20 @@ void Quit (const char *errorStr, ...)
 
     if (!*error)
     {
-#ifdef NOTYET
-        #ifndef JAPAN
-        CA_CacheGrChunk (ORDERSCREEN);
-        screen = grsegs[ORDERSCREEN];
-        #endif
-#endif
         WriteConfig ();
     }
-#ifdef NOTYET
-    else
-    {
-        CA_CacheGrChunk (ERRORSCREEN);
-        screen = grsegs[ERRORSCREEN];
-    }
-#endif
 
     ShutdownId ();
 
     if (*error)
     {
-#ifdef NOTYET
-        memcpy((byte *)0xb8000,screen+7,7*160);
-        SetTextCursor(9,3);
-#endif
         puts(error);
-#ifdef NOTYET
-        SetTextCursor(0,7);
-#endif
         VW_WaitVBL(200);
         exit(1);
     }
     else
     if (!(*error))
     {
-#ifdef NOTYET
-        #ifndef JAPAN
-        memcpy((byte *)0xb8000,screen+7,24*160); // 24 for SPEAR/UPLOAD compatibility
-        #endif
-        SetTextCursor(0,23);
-#endif
     }
 
     exit(0);
@@ -1476,13 +1299,8 @@ static void DemoLoop()
         EnableEndGameMenuItem();
         NewGame(param_difficulty,0);
 
-#ifndef SPEAR
         gamestate.episode = param_tedlevel/10;
         gamestate.mapon = param_tedlevel%10;
-#else
-        gamestate.episode = 0;
-        gamestate.mapon = param_tedlevel;
-#endif
         GameLoop();
         Quit (NULL);
     }
@@ -1497,29 +1315,15 @@ static void DemoLoop()
     #ifndef UPLOAD
 
         #ifndef GOODTIMES
-        #ifndef SPEAR
-        #ifndef JAPAN
         if (!param_nowait)
             NonShareware();
-        #endif
-        #else
-            #ifndef GOODTIMES
-            #ifndef SPEARDEMO
-            extern void CopyProtection(void);
-            if(!param_goodtimes)
-                CopyProtection();
-            #endif
-            #endif
-        #endif
         #endif
     #endif
 
     StartCPMusic(INTROSONG);
 
-#ifndef JAPAN
     if (!param_nowait)
         PG13 ();
-#endif
 
 #endif
 
@@ -1532,27 +1336,9 @@ static void DemoLoop()
 //
 #ifndef DEMOTEST
 
-#ifdef SPEAR
-            SDL_Color pal[256];
-            CA_CacheGrChunk (TITLEPALETTE);
-            VL_ConvertPalette(grsegs[TITLEPALETTE], pal, 256);
-
-            CA_CacheGrChunk (TITLE1PIC);
-            VWB_DrawPic (0,0,TITLE1PIC);
-            UNCACHEGRCHUNK (TITLE1PIC);
-
-            CA_CacheGrChunk (TITLE2PIC);
-            VWB_DrawPic (0,80,TITLE2PIC);
-            UNCACHEGRCHUNK (TITLE2PIC);
-            VW_UpdateScreen ();
-            VL_FadeIn(0,255,pal,30);
-
-            UNCACHEGRCHUNK (TITLEPALETTE);
-#else
             CA_CacheScreen (TITLEPIC);
             VW_UpdateScreen ();
             VW_FadeIn();
-#endif
             if (IN_UserInput(TickBase*15))
                 break;
             VW_FadeOut();
@@ -1579,11 +1365,7 @@ static void DemoLoop()
 // demo
 //
 
-            #ifndef SPEARDEMO
             PlayDemo (LastDemo++%4);
-            #else
-            PlayDemo (0);
-            #endif
 
             if (playstate == ex_abort)
                 break;
@@ -1630,11 +1412,7 @@ void CheckParameters(int argc, char *argv[])
     for(int i = 1; i < argc; i++)
     {
         char *arg = argv[i];
-#ifndef SPEAR
         IFARG("--goobers")
-#else
-        IFARG("--debugmode")
-#endif
             param_debugmode = true;
         else IFARG("--baby")
             param_difficulty = 0;
@@ -1862,11 +1640,6 @@ void CheckParameters(int argc, char *argv[])
             "                        (may be useful for some broken mods)\n"
             " --configdir <dir>      Directory where config file and save games are stored\n"
             "                        (default: $HOME/.wolf4sdl)\n"
-#if defined(SPEAR) && !defined(SPEARDEMO)
-            " --mission <mission>    Mission number to play (0-3)\n"
-            "                        (default: 0 -> .sod, 1-3 -> .sd*)\n"
-            " --goodtimes            Disable copy protection quiz\n"
-#endif
             , defaultSampleRate
         );
         exit(1);

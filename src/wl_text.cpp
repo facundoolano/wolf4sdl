@@ -25,7 +25,6 @@ TEXT FORMATTING COMMANDS
 =============================================================================
 */
 
-#ifndef SPEAR
 
 #define BACKCOLOR       0x11
 
@@ -66,7 +65,6 @@ static boolean layoutdone;
 
 //===========================================================================
 
-#ifndef JAPAN
 /*
 =====================
 =
@@ -481,13 +479,8 @@ void PageLayout (boolean shownumber)
 
     if (shownumber)
     {
-#ifdef SPANISH
-        sprintf(str, "Hoja %d de %d", pagenum, numpages);
-        px = 208;
-#else
         sprintf(str, "pg %d of %d", pagenum, numpages);
         px = 213;
-#endif
         py = 183;
         fontcolor = 0x4f;                          //12^BACKCOLOR;
 
@@ -552,12 +545,10 @@ void CacheLayoutGraphics (void)
                 numpages++;
             if (ch == 'E')          // end of file, so load graphics and return
             {
-#ifndef SPEAR
                 CA_CacheGrChunk(H_TOPWINDOWPIC);
                 CA_CacheGrChunk(H_LEFTWINDOWPIC);
                 CA_CacheGrChunk(H_RIGHTWINDOWPIC);
                 CA_CacheGrChunk(H_BOTTOMINFOPIC);
-#endif
                 //                              CA_CacheMarks ();
                 text = textstart;
                 return;
@@ -580,7 +571,6 @@ void CacheLayoutGraphics (void)
 
     Quit ("CacheLayoutGraphics: No ^E to terminate file!");
 }
-#endif
 
 
 /*
@@ -591,60 +581,18 @@ void CacheLayoutGraphics (void)
 =====================
 */
 
-#ifdef JAPAN
-void ShowArticle (int which)
-#else
 void ShowArticle (char *article)
-#endif
 {
-#ifdef JAPAN
-    int snames[10] = {
-        H_HELP1PIC,
-        H_HELP2PIC,
-        H_HELP3PIC,
-        H_HELP4PIC,
-        H_HELP5PIC,
-        H_HELP6PIC,
-        H_HELP7PIC,
-        H_HELP8PIC,
-        H_HELP9PIC,
-        H_HELP10PIC};
-    int enames[14] = {
-        0,0,
-#ifndef JAPDEMO
-        C_ENDGAME1APIC,
-        C_ENDGAME1BPIC,
-        C_ENDGAME2APIC,
-        C_ENDGAME2BPIC,
-        C_ENDGAME3APIC,
-        C_ENDGAME3BPIC,
-        C_ENDGAME4APIC,
-        C_ENDGAME4BPIC,
-        C_ENDGAME5APIC,
-        C_ENDGAME5BPIC,
-        C_ENDGAME6APIC,
-        C_ENDGAME6BPIC
-#endif
-    };
-#endif
     unsigned    oldfontnumber;
     boolean     newpage,firstpage;
     ControlInfo ci;
 
-#ifdef JAPAN
-    pagenum = 1;
-    if (!which)
-        numpages = 10;
-    else
-        numpages = 2;
-#else
     text = article;
     oldfontnumber = fontnumber;
     fontnumber = 0;
     CA_CacheGrChunk(STARTFONT);
     VWB_Bar (0,0,320,200,BACKCOLOR);
     CacheLayoutGraphics ();
-#endif
 
     newpage = true;
     firstpage = true;
@@ -654,14 +602,7 @@ void ShowArticle (char *article)
         if (newpage)
         {
             newpage = false;
-#ifdef JAPAN
-            if (!which)
-                CA_CacheScreen(snames[pagenum - 1]);
-            else
-                CA_CacheScreen(enames[which*2 + pagenum - 1]);
-#else
             PageLayout (true);
-#endif
             VW_UpdateScreen ();
             if (firstpage)
             {
@@ -706,12 +647,8 @@ void ShowArticle (char *article)
             case dir_West:
                 if (pagenum>1)
                 {
-#ifndef JAPAN
                     BackPage ();
                     BackPage ();
-#else
-                  pagenum--;
-#endif
                     newpage = true;
                 }
                 TicDelay(20);
@@ -722,9 +659,6 @@ void ShowArticle (char *article)
                 if (pagenum<numpages)
                 {
                     newpage = true;
-#ifdef JAPAN
-                    pagenum++;
-#endif
                 }
                 TicDelay(20);
                 break;
@@ -740,16 +674,12 @@ void ShowArticle (char *article)
 
 //===========================================================================
 
-#ifndef JAPAN
 #ifdef ARTSEXTERN
 int     endextern = T_ENDART1;
-#ifndef SPEAR
 int     helpextern = T_HELPART;
-#endif
 #endif
 char helpfilename[13] = "HELPART.",
     endfilename[13] = "ENDART1.";
-#endif
 
 /*
 =================
@@ -758,7 +688,6 @@ char helpfilename[13] = "HELPART.",
 =
 =================
 */
-#ifndef SPEAR
 void HelpScreens (void)
 {
     int     artnum;
@@ -768,11 +697,6 @@ void HelpScreens (void)
 #endif
 
 
-#ifdef JAPAN
-    ShowArticle (0);
-    VW_FadeOut();
-    FreeMusic ();
-#else
 
 #ifdef ARTSEXTERN
     artnum = helpextern;
@@ -794,9 +718,7 @@ void HelpScreens (void)
     VW_FadeOut();
 
     FreeMusic ();
-#endif
 }
-#endif
 
 //
 // END ARTICLES
@@ -811,18 +733,6 @@ void EndText (void)
 
     ClearMemory ();
 
-#ifdef JAPAN
-    ShowArticle(gamestate.episode + 1);
-
-    VW_FadeOut();
-
-    SETFONTCOLOR(0,15);
-    IN_ClearKeysDown();
-    if (MousePresent && IN_IsInputGrabbed())
-        IN_CenterMouse();  // Clear accumulated mouse movement
-
-    FreeMusic ();
-#else
 
 
 
@@ -852,6 +762,4 @@ void EndText (void)
         IN_CenterMouse();  // Clear accumulated mouse movement
 
     FreeMusic ();
-#endif
 }
-#endif

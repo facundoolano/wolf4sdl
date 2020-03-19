@@ -31,15 +31,7 @@ boolean         ingame,fizzlein;
 gametype        gamestate;
 byte            bordercol=VIEWCOLOR;        // color of the Change View/Ingame border
 
-#ifdef SPEAR
-int32_t         spearx,speary;
-unsigned        spearangle;
-boolean         spearflag;
-#endif
 
-#ifdef USE_FEATUREFLAGS
-int ffDataTopLeft, ffDataTopRight, ffDataBottomLeft, ffDataBottomRight;
-#endif
 
 //
 // ELEVATOR BACK MAPS - REMEMBER (-1)!!
@@ -299,10 +291,6 @@ static void ScanInfoPlane(void)
                 case 70:
                 case 71:
                 case 72:
-#ifdef SPEAR
-                case 73:                        // TRUCK AND SPEAR!
-                case 74:
-#endif
                     SpawnStatic(x,y,tile-23);
                     break;
 
@@ -505,7 +493,6 @@ static void ScanInfoPlane(void)
 //
 // boss
 //
-#ifndef SPEAR
                 case 214:
                     SpawnBoss (x,y);
                     break;
@@ -527,27 +514,6 @@ static void ScanInfoPlane(void)
                 case 178:
                     SpawnHitler (x,y);
                     break;
-#else
-                case 106:
-                    SpawnSpectre (x,y);
-                    break;
-                case 107:
-                    SpawnAngel (x,y);
-                    break;
-                case 125:
-                    SpawnTrans (x,y);
-                    break;
-                case 142:
-                    SpawnUber (x,y);
-                    break;
-                case 143:
-                    SpawnWill (x,y);
-                    break;
-                case 161:
-                    SpawnDeath (x,y);
-                    break;
-
-#endif
 
 //
 // mutants
@@ -597,7 +563,6 @@ static void ScanInfoPlane(void)
 //
 // ghosts
 //
-#ifndef SPEAR
                 case 224:
                     SpawnGhosts (en_blinky,x,y);
                     break;
@@ -610,7 +575,6 @@ static void ScanInfoPlane(void)
                 case 227:
                     SpawnGhosts (en_inky,x,y);
                     break;
-#endif
             }
         }
     }
@@ -658,18 +622,6 @@ void SetupGameLevel (void)
     CA_CacheMap (gamestate.mapon+10*gamestate.episode);
     mapon-=gamestate.episode*10;
 
-#ifdef USE_FEATUREFLAGS
-    // Temporary definition to make things clearer
-    #define MXX MAPSIZE - 1
-
-    // Read feature flags data from map corners and overwrite corners with adjacent tiles
-    ffDataTopLeft     = MAPSPOT(0,   0,   0); MAPSPOT(0,   0,   0) = MAPSPOT(1,       0,       0);
-    ffDataTopRight    = MAPSPOT(MXX, 0,   0); MAPSPOT(MXX, 0,   0) = MAPSPOT(MXX,     1,       0);
-    ffDataBottomRight = MAPSPOT(MXX, MXX, 0); MAPSPOT(MXX, MXX, 0) = MAPSPOT(MXX - 1, MXX,     0);
-    ffDataBottomLeft  = MAPSPOT(0,   MXX, 0); MAPSPOT(0,   MXX, 0) = MAPSPOT(0,       MXX - 1, 0);
-
-    #undef MXX
-#endif
 
 //
 // copy the wall data to a data segment array
@@ -1080,14 +1032,10 @@ void RecordDemo (void)
     CA_CacheGrChunk(STARTFONT);
     fontnumber=0;
     SETFONTCOLOR(0,15);
-#ifndef SPEAR
 #ifdef UPLOAD
     US_Print("  Demo which level(1-10): "); maps = 10;
 #else
     US_Print("  Demo which level(1-60): "); maps = 60;
-#endif
-#else
-    US_Print("  Demo which level(1-21): "); maps = 21;
 #endif
     VW_UpdateScreen();
     VW_FadeIn ();
@@ -1103,13 +1051,8 @@ void RecordDemo (void)
 
     VW_FadeOut ();
 
-#ifndef SPEAR
     NewGame (gd_hard,level/10);
     gamestate.mapon = level%10;
-#else
-    NewGame (gd_hard,0);
-    gamestate.mapon = level;
-#endif
 
     StartDemoRecord (level);
 
@@ -1159,11 +1102,7 @@ void PlayDemo (int demonumber)
     int length;
 #ifdef DEMOSEXTERN
 // debug: load chunk
-#ifndef SPEARDEMO
     int dems[4]={T_DEMO0,T_DEMO1,T_DEMO2,T_DEMO3};
-#else
-    int dems[1]={T_DEMO0};
-#endif
 
     CA_CacheGrChunk(dems[demonumber]);
     demoptr = (int8_t *) grsegs[dems[demonumber]];
@@ -1387,13 +1326,6 @@ restartgame:
         if (!loadedgame)
             SetupGameLevel ();
 
-#ifdef SPEAR
-        if (gamestate.mapon == 20)      // give them the key allways
-        {
-            gamestate.keys |= 1;
-            DrawKeys ();
-        }
-#endif
 
         ingame = true;
         if(loadedgame)
@@ -1413,36 +1345,8 @@ restartgame:
 
         DrawLevel ();
 
-#ifdef SPEAR
-startplayloop:
-#endif
         PlayLoop ();
 
-#ifdef SPEAR
-        if (spearflag)
-        {
-            SD_StopSound();
-            SD_PlaySound(GETSPEARSND);
-            if (DigiMode != sds_Off)
-            {
-                Delay(150);
-            }
-            else
-                SD_WaitSoundDone();
-
-            ClearMemory ();
-            gamestate.oldscore = gamestate.score;
-            gamestate.mapon = 20;
-            SetupGameLevel ();
-            StartMusic ();
-            player->x = spearx;
-            player->y = speary;
-            player->angle = (short)spearangle;
-            spearflag = false;
-            Thrust (0,0);
-            goto startplayloop;
-        }
-#endif
 
         StopMusic ();
         ingame = false;
@@ -1467,45 +1371,10 @@ startplayloop:
                 LevelCompleted ();              // do the intermission
                 if(viewsize == 21) DrawPlayScreen();
 
-#ifdef SPEARDEMO
-                if (gamestate.mapon == 1)
-                {
-                    died = true;                    // don't "get psyched!"
 
-                    VW_FadeOut ();
-
-                    ClearMemory ();
-
-                    CheckHighScore (gamestate.score,gamestate.mapon+1);
-#ifndef JAPAN
-                    strcpy(MainMenu[viewscores].string,STR_VS);
-#endif
-                    MainMenu[viewscores].routine = CP_ViewScores;
-                    return;
-                }
-#endif
-
-#ifdef JAPDEMO
-                if (gamestate.mapon == 3)
-                {
-                    died = true;                    // don't "get psyched!"
-
-                    VW_FadeOut ();
-
-                    ClearMemory ();
-
-                    CheckHighScore (gamestate.score,gamestate.mapon+1);
-#ifndef JAPAN
-                    strcpy(MainMenu[viewscores].string,STR_VS);
-#endif
-                    MainMenu[viewscores].routine = CP_ViewScores;
-                    return;
-                }
-#endif
 
                 gamestate.oldscore = gamestate.score;
 
-#ifndef SPEAR
                 //
                 // COMING BACK FROM SECRET LEVEL
                 //
@@ -1517,31 +1386,6 @@ startplayloop:
                     //
                     if (playstate == ex_secretlevel)
                         gamestate.mapon = 9;
-#else
-
-#define FROMSECRET1             3
-#define FROMSECRET2             11
-
-                //
-                // GOING TO SECRET LEVEL
-                //
-                if (playstate == ex_secretlevel)
-                    switch(gamestate.mapon)
-                {
-                    case FROMSECRET1: gamestate.mapon = 18; break;
-                    case FROMSECRET2: gamestate.mapon = 19; break;
-                }
-                else
-                    //
-                    // COMING BACK FROM SECRET LEVEL
-                    //
-                    if (gamestate.mapon == 18 || gamestate.mapon == 19)
-                        switch(gamestate.mapon)
-                    {
-                        case 18: gamestate.mapon = FROMSECRET1+1; break;
-                        case 19: gamestate.mapon = FROMSECRET2+1; break;
-                    }
-#endif
                     else
                         //
                         // GOING TO NEXT LEVEL
@@ -1564,19 +1408,13 @@ startplayloop:
                 ClearMemory ();
 
                 CheckHighScore (gamestate.score,gamestate.mapon+1);
-#ifndef JAPAN
                 strcpy(MainMenu[viewscores].string,STR_VS);
-#endif
                 MainMenu[viewscores].routine = CP_ViewScores;
                 return;
 
             case ex_victorious:
                 if(viewsize == 21) DrawPlayScreen();
-#ifndef SPEAR
                 VW_FadeOut ();
-#else
-                VL_FadeOut (0,255,0,17,17,300);
-#endif
                 ClearMemory ();
 
                 Victory ();
@@ -1584,9 +1422,7 @@ startplayloop:
                 ClearMemory ();
 
                 CheckHighScore (gamestate.score,gamestate.mapon+1);
-#ifndef JAPAN
                 strcpy(MainMenu[viewscores].string,STR_VS);
-#endif
                 MainMenu[viewscores].routine = CP_ViewScores;
                 return;
 

@@ -55,11 +55,7 @@ SDL_Color curpal[256];
 #define RGB(r, g, b) {(r)*255/63, (g)*255/63, (b)*255/63, 255}
 
 SDL_Color gamepal[]={
-#ifdef SPEAR
-    #include "sodpal.inc"
-#else
     #include "wolfpal.inc"
-#endif
 };
 
 CASSERT(lengthof(gamepal) == 256)
@@ -92,11 +88,7 @@ void	VL_Shutdown (void)
 void	VL_SetVGAPlaneMode (void)
 {
     const char *title;
-#ifdef SPEAR
-    title = "Spear of Destiny";
-#else
     title = "Wolfenstein 3D";
-#endif
 
     window = SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED,
                               SDL_WINDOWPOS_UNDEFINED, screenWidth,
