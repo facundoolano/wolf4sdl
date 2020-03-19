@@ -15,8 +15,8 @@ loaded into the data segment
 */
 
 #include <sys/types.h>
-    #include <sys/uio.h>
-    #include <unistd.h>
+#include <sys/uio.h>
+#include <unistd.h>
 
 #include "wl_def.h"
 #pragma hdrstop

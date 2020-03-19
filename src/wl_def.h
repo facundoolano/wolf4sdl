@@ -27,7 +27,11 @@
 
 #include "foreign.h"
 #include "audiowl6.h"
+#ifdef GOODTIMES
 #include "gfxv_wl6.h"
+#else
+#include "gfxv_apo.h"
+#endif
 
 typedef uint8_t byte;
 typedef uint16_t word;
