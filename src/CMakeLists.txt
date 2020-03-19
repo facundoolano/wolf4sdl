@@ -21,7 +21,6 @@ initial_sources(
 	wl_act1.cpp
 	wl_act2.cpp
 	wl_agent.cpp
-	wl_atmos.cpp
 	wl_debug.cpp
 	wl_draw.cpp
 	wl_game.cpp
@@ -29,7 +28,6 @@ initial_sources(
 	wl_main.cpp
 	wl_menu.cpp
 	wl_play.cpp
-	wl_shade.cpp
 	wl_state.cpp
 	wl_text.cpp
 )

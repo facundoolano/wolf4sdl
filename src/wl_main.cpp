@@ -1,14 +1,8 @@
 // WL_MAIN.C
 
-#ifdef _WIN32
-    #include <io.h>
-#else
-    #include <unistd.h>
-#endif
-
+#include <unistd.h>
 #include "wl_def.h"
 #pragma hdrstop
-#include "wl_atmos.h"
 #include <SDL_syswm.h>
 
 
