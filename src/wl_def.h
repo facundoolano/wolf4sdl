@@ -22,13 +22,8 @@
 
 #pragma pack(1)
 
-#if   defined(GP2X)
-#define YESBUTTONNAME "Y"
-#define NOBUTTONNAME  "B"
-#else
 #define YESBUTTONNAME "Y"
 #define NOBUTTONNAME  "N"
-#endif
 
 #include "foreign.h"
 #include "audiowl6.h"
@@ -1216,12 +1211,6 @@ extern  void    EndText(void);
 =============================================================================
 */
 
-#if defined(GP2X)
-
-void GP2X_ButtonDown(int button);
-void GP2X_ButtonUp(int button);
-
-#endif
 
 
 /*
