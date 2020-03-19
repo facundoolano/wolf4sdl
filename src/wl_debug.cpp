@@ -1,10 +1,6 @@
 // WL_DEBUG.C
 
-#ifdef _WIN32
-	#include <io.h>
-#else
 	#include <unistd.h>
-#endif
 
 #include "wl_def.h"
 #pragma hdrstop

@@ -1560,9 +1560,6 @@ startplayloop:
                 if(screenHeight % 200 != 0)
                     VL_ClearScreen(0);
 
-#ifdef _arch_dreamcast
-                DC_StatusClearLCD();
-#endif
 
                 ClearMemory ();
 

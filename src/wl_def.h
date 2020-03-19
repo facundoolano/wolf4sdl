@@ -11,14 +11,9 @@
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
-#if defined(_arch_dreamcast)
-#	include <string.h>
-#	include "dc/dc_main.h"
-#elif !defined(_WIN32)
 #	include <stdint.h>
 #	include <string.h>
 #	include <stdarg.h>
-#endif
 #include <SDL.h>
 
 #if !defined O_BINARY
@@ -27,10 +22,7 @@
 
 #pragma pack(1)
 
-#if defined(_arch_dreamcast)
-#define YESBUTTONNAME "A"
-#define NOBUTTONNAME  "B"
-#elif defined(GP2X)
+#if   defined(GP2X)
 #define YESBUTTONNAME "Y"
 #define NOBUTTONNAME  "B"
 #else
@@ -1327,10 +1319,6 @@ extern  void    EndText(void);
 
 #if defined(GP2X)
 
-#if defined(GP2X_940)
-void GP2X_MemoryInit(void);
-void GP2X_Shutdown(void);
-#endif
 void GP2X_ButtonDown(int button);
 void GP2X_ButtonUp(int button);
 
@@ -1367,11 +1355,6 @@ static inline fixed FixedMul(fixed a, fixed b)
 
 #define CHECKMALLOCRESULT(x) if(!(x)) Quit("Out of memory at %s:%i", __FILE__, __LINE__)
 
-#ifdef _WIN32
-    #define strcasecmp stricmp
-    #define strncasecmp strnicmp
-    #define snprintf _snprintf
-#else
     static inline char* itoa(int value, char* string, int radix)
     {
 	    sprintf(string, "%d", value);
@@ -1383,7 +1366,6 @@ static inline fixed FixedMul(fixed a, fixed b)
 	    sprintf(string, "%ld", value);
 	    return string;
     }
-#endif
 
 #define lengthof(x) (sizeof(x) / sizeof(*(x)))
 #define endof(x)    ((x) + lengthof(x))

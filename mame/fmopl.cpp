@@ -78,7 +78,6 @@ Revision History:
 
 #include "../src/version.h"
 
-#ifndef USE_GPL
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -2598,4 +2597,3 @@ void Y8950SetKeyboardHandler(int which,OPL_PORTHANDLER_W KeyboardHandler_w,OPL_P
 
 #endif
 
-#endif  // ifndef USE_GPL
