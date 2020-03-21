@@ -70,14 +70,6 @@ void	VL_Shutdown (void)
 }
 
 
-/*
-=======================
-=
-= VL_SetVGAPlaneMode
-=
-=======================
-*/
-
 void	VL_SetVGAPlaneMode (void)
 {
     const char *title;
@@ -87,25 +79,8 @@ void	VL_SetVGAPlaneMode (void)
                               SDL_WINDOWPOS_UNDEFINED, screenWidth,
                               screenHeight, SDL_WINDOW_ALLOW_HIGHDPI
                               | (fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0));
-    if(!window)
-    {
-        printf("Unable to create %ix%ix%i window: %s\n", screenWidth,
-               screenHeight, screenBits, SDL_GetError());
-        exit(1);
-    }
-
     renderer = SDL_CreateRenderer(window, -1, 0);
-    if(!renderer)
-    {
-        printf("Unable to create renderer: %s\n", SDL_GetError());
-        exit(1);
-    }
     SDL_RendererInfo info;
-    if(SDL_GetRendererInfo(renderer, &info) < 0)
-    {
-        printf("Unable to get renderer info: %s\n", SDL_GetError());
-        exit(1);
-    }
     for(Uint32 i = 0; i < info.num_texture_formats; ++i)
     {
         // TODO: debug this
@@ -119,52 +94,16 @@ void	VL_SetVGAPlaneMode (void)
     texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ABGR8888,
                                 SDL_TEXTUREACCESS_STREAMING, screenWidth,
                                 screenHeight);
-    if(!texture)
-    {
-        printf("Unable to create texture: %s\n", SDL_GetError());
-        exit(1);
-    }
-
-
-//    screen = SDL_SetVideoMode(screenWidth, screenHeight, screenBits,
-//          (usedoublebuffering ? SDL_HWSURFACE | SDL_DOUBLEBUF : 0)
-//        | (screenBits == 8 ? SDL_HWPALETTE : 0)
-//        | (fullscreen ? SDL_FULLSCREEN : 0));
     screen = SDL_CreateRGBSurface(0, screenWidth, screenHeight, 32, 0, 0, 0, 0);
-    if(!screen)
-    {
-        printf("Unable to set %ix%ix%i video mode: %s\n", screenWidth,
-            screenHeight, screenBits, SDL_GetError());
-        exit(1);
-    }
-//    if((screen->flags & SDL_DOUBLEBUF) != SDL_DOUBLEBUF)
-//        usedoublebuffering = false;
     SDL_ShowCursor(SDL_DISABLE);
 
-//    SDL_SetColors(screen, gamepal, 0, 256);
     memcpy(curpal, gamepal, sizeof(SDL_Color) * 256);
 
     screenBuffer = SDL_CreateRGBSurface(SDL_SWSURFACE, screenWidth,
         screenHeight, 8, 0, 0, 0, 0);
-    if(!screenBuffer)
-    {
-        printf("Unable to create screen buffer surface: %s\n", SDL_GetError());
-        exit(1);
-    }
     SDL_Palette *sdlpal = SDL_AllocPalette(256);
-    if(!sdlpal)
-        exit(1);
-    if(SDL_SetPaletteColors(sdlpal, gamepal, 0, 256) < 0)
-    {
-        printf("Unable to set palette colors: %s\n", SDL_GetError());
-        exit(1);
-    }
-    if(SDL_SetSurfacePalette(screenBuffer, sdlpal) < 0)
-    {
-        printf("Unable to set surface palette: %s\n", SDL_GetError());
-        exit(1);
-    }
-//    SDL_SetColors(screenBuffer, gamepal, 0, 256);
+    SDL_SetPaletteColors(sdlpal, gamepal, 0, 256);
+    SDL_SetSurfacePalette(screenBuffer, sdlpal);
 
     screenPitch = screen->pitch;
     bufferPitch = screenBuffer->pitch;

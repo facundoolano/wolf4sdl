@@ -7,7 +7,7 @@ build:
 	rm -rf build && mkdir build && cd build && cmake .. && make
 
 run:
-	cd data && ../build/engine
+	cd data && ../build/engine --windowed --normal --tedlevel 0
 
 # remove code inside unused macros e.g.
 # make unifdef ARGS="-U USE_SHADING -U USE_HIRES"

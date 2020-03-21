@@ -118,7 +118,7 @@ void VW_MeasurePropString (const char *string, word *width, word *height)
 
 void VH_UpdateScreen()
 {
-	SDL_BlitSurface(screenBuffer, NULL, screen, NULL);
+    SDL_BlitSurface(screenBuffer, NULL, screen, NULL);
     VL_Flip();
 }
 

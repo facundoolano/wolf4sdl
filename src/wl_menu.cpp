@@ -2550,42 +2550,12 @@ IntroScreen (void)
     //
     // DRAW MAIN MEMORY
     //
-#ifdef ABCAUS
-    memory = (1023l + mminfo.nearheap + mminfo.farheap) / 1024l;
-    for (i = 0; i < 10; i++)
-        if (memory >= main[i])
-            VWB_Bar (49, 163 - 8 * i, 6, 5, MAINCOLOR - i);
-
-    //
-    // DRAW EMS MEMORY
-    //
-    if (EMSPresent)
-    {
-        emshere = 4l * EMSPagesAvail;
-        for (i = 0; i < 10; i++)
-            if (emshere >= ems[i])
-                VWB_Bar (89, 163 - 8 * i, 6, 5, EMSCOLOR - i);
-    }
-
-    //
-    // DRAW XMS MEMORY
-    //
-    if (XMSPresent)
-    {
-        xmshere = 4l * XMSPagesAvail;
-        for (i = 0; i < 10; i++)
-            if (xmshere >= xms[i])
-                VWB_Bar (129, 163 - 8 * i, 6, 5, XMSCOLOR - i);
-    }
-#else
     for (i = 0; i < 10; i++)
         VWB_Bar (49, 163 - 8 * i, 6, 5, MAINCOLOR - i);
     for (i = 0; i < 10; i++)
         VWB_Bar (89, 163 - 8 * i, 6, 5, EMSCOLOR - i);
     for (i = 0; i < 10; i++)
         VWB_Bar (129, 163 - 8 * i, 6, 5, XMSCOLOR - i);
-#endif
-
 
     //
     // FILL BOXES

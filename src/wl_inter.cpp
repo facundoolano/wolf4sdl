@@ -933,41 +933,4 @@ CheckHighScore (int32_t score, word other)
 }
 
 
-#ifndef UPLOAD
-////////////////////////////////////////////////////////
-//
-// NON-SHAREWARE NOTICE
-//
-////////////////////////////////////////////////////////
-void
-NonShareware (void)
-{
-    VW_FadeOut ();
-
-    ClearMScreen ();
-    DrawStripes (10);
-
-    CA_CacheGrChunk (STARTFONT + 1);
-    fontnumber = 1;
-
-    SETFONTCOLOR (READHCOLOR, BKGDCOLOR);
-    PrintX = 110;
-    PrintY = 15;
-
-    US_Print ("Attention");
-
-    SETFONTCOLOR (HIGHLIGHT, BKGDCOLOR);
-    WindowX = PrintX = 40;
-    PrintY = 60;
-    US_Print ("This game is NOT shareware.\n");
-    US_Print ("Please do not distribute it.\n");
-    US_Print ("Thanks.\n\n");
-    US_Print ("        Id Software\n");
-
-    VW_UpdateScreen ();
-    VW_FadeIn ();
-    IN_Ack ();
-}
-#endif
-
 //===========================================================================

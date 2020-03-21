@@ -896,7 +896,7 @@ boolean palshifted;
 =====================
 =
 = InitRedShifts
-=
+red palette shift when player gets damage
 =====================
 */
 

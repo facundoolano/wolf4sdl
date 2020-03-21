@@ -18,8 +18,6 @@
 =============================================================================
 */
 
-extern byte signon[];
-
 /*
 =============================================================================
 
@@ -343,38 +341,6 @@ boolean SaveTheGame(FILE *file,int x,int y)
     objtype *ob;
     objtype nullobj;
     statobj_t nullstat;
-
-/*    if (_dos_getdiskfree(0,&dfree))
-        Quit("Error in _dos_getdiskfree call");
-
-    avail = (int32_t)dfree.avail_clusters *
-                  dfree.bytes_per_sector *
-                  dfree.sectors_per_cluster;
-
-    size = 0;
-    for (ob = player; ob ; ob=ob->next)
-        size += sizeof(*ob);
-    size += sizeof(nullobj);
-
-    size += sizeof(gamestate) +
-            sizeof(LRstruct)*LRpack +
-            sizeof(tilemap) +
-            sizeof(actorat) +
-            sizeof(laststatobj) +
-            sizeof(statobjlist) +
-            sizeof(doorposition) +
-            sizeof(pwallstate) +
-            sizeof(pwalltile) +
-            sizeof(pwallx) +
-            sizeof(pwally) +
-            sizeof(pwalldir) +
-            sizeof(pwallpos);
-
-    if (avail < size)
-    {
-        Message(STR_NOSPACE1"\n"STR_NOSPACE2);
-        return false;
-    }*/
 
     checksum = 0;
 
@@ -789,64 +755,6 @@ void SetupWalls (void)
     }
 }
 
-//===========================================================================
-
-/*
-==========================
-=
-= SignonScreen
-=
-==========================
-*/
-
-void SignonScreen (void)                        // VGA version
-{
-    VL_SetVGAPlaneMode ();
-
-    VL_MungePic (signon,320,200);
-    VL_MemToScreen (signon,320,200,0,0);
-}
-
-
-/*
-==========================
-=
-= FinishSignon
-=
-==========================
-*/
-
-void FinishSignon (void)
-{
-    VW_Bar (0,189,300,11,VL_GetPixel(0,0));
-    WindowX = 0;
-    WindowW = 320;
-    PrintY = 190;
-
-    SETFONTCOLOR(14,4);
-
-    US_CPrint ("Press a key");
-
-
-    VH_UpdateScreen();
-
-    if (!param_nowait)
-        IN_Ack ();
-
-    VW_Bar (0,189,300,11,VL_GetPixel(0,0));
-
-    PrintY = 190;
-    SETFONTCOLOR(10,4);
-
-    US_CPrint ("Working...");
-
-    VH_UpdateScreen();
-
-    SETFONTCOLOR(0,15);
-}
-
-//===========================================================================
-
 /*
 =====================
 =
@@ -960,91 +868,6 @@ CP_itemtype MusicMenu[]=
         {1,"Wolfpack",0}
     };
 
-void DoJukebox(void)
-{
-    int which,lastsong=-1;
-    unsigned start;
-    unsigned songs[]=
-        {
-            GETTHEM_MUS,
-            SEARCHN_MUS,
-            POW_MUS,
-            SUSPENSE_MUS,
-            WARMARCH_MUS,
-            CORNER_MUS,
-
-            NAZI_OMI_MUS,
-            PREGNANT_MUS,
-            GOINGAFT_MUS,
-            HEADACHE_MUS,
-            DUNGEON_MUS,
-            ULTIMATE_MUS,
-
-            INTROCW3_MUS,
-            NAZI_RAP_MUS,
-            TWELFTH_MUS,
-            ZEROHOUR_MUS,
-            ULTIMATE_MUS,
-            PACMAN_MUS
-        };
-
-    IN_ClearKeysDown();
-    if (!AdLibPresent && !SoundBlasterPresent)
-        return;
-
-    MenuFadeOut();
-
-#ifndef UPLOAD
-    start = ((SDL_GetTicks()/10)%3)*6;
-#else
-    start = 0;
-#endif
-
-    CA_CacheGrChunk (STARTFONT+1);
-    CacheLump (CONTROLS_LUMP_START,CONTROLS_LUMP_END);
-    CA_LoadAllSounds ();
-
-    fontnumber=1;
-    ClearMScreen ();
-    VWB_DrawPic(112,184,C_MOUSELBACKPIC);
-    DrawStripes (10);
-    SETFONTCOLOR (TEXTCOLOR,BKGDCOLOR);
-
-    DrawWindow (CTL_X-2,CTL_Y-6,280,13*7,BKGDCOLOR);
-
-    DrawMenu (&MusicItems,&MusicMenu[start]);
-
-    SETFONTCOLOR (READHCOLOR,BKGDCOLOR);
-    PrintY=15;
-    WindowX = 0;
-    WindowY = 320;
-    US_CPrint ("Robert's Jukebox");
-
-    SETFONTCOLOR (TEXTCOLOR,BKGDCOLOR);
-    VW_UpdateScreen();
-    MenuFadeIn();
-
-    do
-    {
-        which = HandleMenu(&MusicItems,&MusicMenu[start],NULL);
-        if (which>=0)
-        {
-            if (lastsong >= 0)
-                MusicMenu[start+lastsong].active = 1;
-
-            StartCPMusic(songs[start + which]);
-            MusicMenu[start+which].active = 2;
-            DrawMenu (&MusicItems,&MusicMenu[start]);
-            VW_UpdateScreen();
-            lastsong = which;
-        }
-    } while(which>=0);
-
-    MenuFadeOut();
-    IN_ClearKeysDown();
-    UnCacheLump (CONTROLS_LUMP_START,CONTROLS_LUMP_END);
-}
-
 /*
 ==========================
 =
@@ -1057,8 +880,6 @@ void DoJukebox(void)
 
 static void InitGame()
 {
-    boolean didjukebox=false;
-
     // initialize SDL
     if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_JOYSTICK) < 0)
     {
@@ -1067,20 +888,10 @@ static void InitGame()
     }
     atexit(SDL_Quit);
 
-    int numJoysticks = SDL_NumJoysticks();
-    if(param_joystickindex && (param_joystickindex < -1 || param_joystickindex >= numJoysticks))
-    {
-        if(!numJoysticks)
-            printf("No joysticks are available to SDL!\n");
-        else
-            printf("The joystick index must be between -1 and %i!\n", numJoysticks - 1);
-        exit(1);
-    }
+    // previously in signon
+    VL_SetVGAPlaneMode ();
 
-
-    SignonScreen ();
-
-	VW_UpdateScreen();
+    VW_UpdateScreen();
 
     VH_Startup ();
     IN_Startup ();
@@ -1089,35 +900,15 @@ static void InitGame()
     CA_Startup ();
     US_Startup ();
 
-    // TODO: Will any memory checking be needed someday??
-
-
-//
-// build some tables
-//
     InitDigiMap ();
 
     ReadConfig ();
 
-    SetupSaveGames();
+    // SetupSaveGames();
 
-//
-// HOLDING DOWN 'M' KEY?
-//
-	IN_ProcessEvents();
+    IN_ProcessEvents();
 
-    if (Keyboard[sc_M])
-    {
-        DoJukebox();
-        didjukebox=true;
-    }
-    else
-
-//
-// draw intro screen stuff
-//
-    IntroScreen ();
-
+    // IntroScreen ();
 
 //
 // load in and lock down some basic chunks
@@ -1136,8 +927,6 @@ static void InitGame()
 // initialize variables
 //
     InitRedShifts ();
-    if(!didjukebox)
-        FinishSignon();
 
 }
 
@@ -1290,112 +1079,22 @@ static void DemoLoop()
 {
     int LastDemo = 0;
 
-//
-// check for launch from ted
-//
-    if (param_tedlevel != -1)
-    {
-        param_nowait = true;
-        EnableEndGameMenuItem();
-        NewGame(param_difficulty,0);
+    // launch from ted
+    param_nowait = true;
+    EnableEndGameMenuItem();
+    NewGame(param_difficulty,0);
 
-        gamestate.episode = param_tedlevel/10;
-        gamestate.mapon = param_tedlevel%10;
-        GameLoop();
-        Quit (NULL);
-    }
+    // show titl pic for a while and move on
+    CA_CacheScreen (TITLEPIC);
+    VW_UpdateScreen ();
+    VW_FadeIn();
+    IN_UserInput(TickBase*10);
+    VW_FadeOut();
 
-
-//
-// main game cycle
-//
-
-#ifndef DEMOTEST
-
-    #ifndef UPLOAD
-
-        #ifndef GOODTIMES
-        if (!param_nowait)
-            NonShareware();
-        #endif
-    #endif
-
-    StartCPMusic(INTROSONG);
-
-    if (!param_nowait)
-        PG13 ();
-
-#endif
-
-    while (1)
-    {
-        while (!param_nowait)
-        {
-//
-// title page
-//
-#ifndef DEMOTEST
-
-            CA_CacheScreen (TITLEPIC);
-            VW_UpdateScreen ();
-            VW_FadeIn();
-            if (IN_UserInput(TickBase*15))
-                break;
-            VW_FadeOut();
-//
-// credits page
-//
-            CA_CacheScreen (CREDITSPIC);
-            VW_UpdateScreen();
-            VW_FadeIn ();
-            if (IN_UserInput(TickBase*10))
-                break;
-            VW_FadeOut ();
-//
-// high scores
-//
-            DrawHighScores ();
-            VW_UpdateScreen ();
-            VW_FadeIn ();
-
-            if (IN_UserInput(TickBase*10))
-                break;
-#endif
-//
-// demo
-//
-
-            PlayDemo (LastDemo++%4);
-
-            if (playstate == ex_abort)
-                break;
-            VW_FadeOut();
-            if(screenHeight % 200 != 0)
-                VL_ClearScreen(0);
-            StartCPMusic(INTROSONG);
-        }
-
-        VW_FadeOut ();
-
-#ifdef DEBUGKEYS
-        if (Keyboard[sc_Tab] && param_debugmode)
-            RecordDemo ();
-        else
-            US_ControlPanel (0);
-#else
-        US_ControlPanel (0);
-#endif
-
-        if (startgame || loadedgame)
-        {
-            GameLoop ();
-            if(!param_nowait)
-            {
-                VW_FadeOut();
-                StartCPMusic(INTROSONG);
-            }
-        }
-    }
+    gamestate.episode = param_tedlevel/10;
+    gamestate.mapon = param_tedlevel%10;
+    GameLoop();
+    Quit (NULL);
 }
 
 
